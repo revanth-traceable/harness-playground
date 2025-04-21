@@ -36,7 +36,7 @@ pipeline:
                   identifier: BuildAndPushDockerRegistry_1
                   spec:
                     connectorRef: revanthdocker
-                    repo: hello-world
+                    repo: revanthharness
                     tags:
                       - v1
                     caching: true
