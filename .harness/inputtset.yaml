@@ -1,0 +1,14 @@
+inputSet:
+  name: playground-inputset
+  identifier: playgroundinputset
+  orgIdentifier: default
+  projectIdentifier: revanthcstesting
+  pipeline:
+    identifier: csplayground
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: <+trigger.branch>
