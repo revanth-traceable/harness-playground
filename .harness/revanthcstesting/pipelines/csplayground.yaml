@@ -38,7 +38,7 @@ pipeline:
                     connectorRef: revanthdocker
                     repo: revanthharness/hello-world-go-ci
                     tags:
-                      - v1
+                      - <+trigger.commitSha>
                     caching: true
                     dockerfile: hello-world/Dockerfile
     - stage:
@@ -78,5 +78,5 @@ pipeline:
                     connectorRef: revanthdocker
                     image:
                       type: docker_v2
-                      tag: v1
+                      tag: <+trigger.commitSha>
                       name: revanthharness/hello-world-go-ci
