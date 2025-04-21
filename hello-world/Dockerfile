@@ -1,22 +1,14 @@
-# Use a multi-stage build for a smaller final image
-FROM golang:1.22-alpine AS builder
+# Use golang alpine as the base image
+FROM golang:1.22-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy the Go source code
-COPY . .
+# Copy the Go files from hello-world directory
+COPY hello-world/ .
 
 # Build the application
 RUN go build -o hello-world .
-
-# Create a minimal image for running the application
-FROM alpine:latest
-
-WORKDIR /app
-
-# Copy the binary from the builder stage
-COPY --from=builder /app/hello-world .
 
 # Run the binary
 CMD ["./hello-world"]
