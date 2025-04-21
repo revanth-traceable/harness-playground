@@ -1,0 +1,43 @@
+pipeline:
+  name: cs-playground
+  identifier: csplayground
+  projectIdentifier: revanthcstesting
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: account.revanthplayground
+        build: <+input>
+  stages:
+    - stage:
+        name: gobuild
+        identifier: gobuild
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: true
+            override: true
+          buildIntelligence:
+            enabled: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: revanthdocker
+                    repo: hello-world
+                    tags:
+                      - v1
+                    caching: true
+                    dockerfile: hello-world/Dockerfile
