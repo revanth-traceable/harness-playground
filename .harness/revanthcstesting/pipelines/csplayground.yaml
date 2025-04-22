@@ -123,3 +123,20 @@ pipeline:
                     sbom:
                       generate: false
                       format: spdx-json
+              - step:
+                  type: SscaArtifactSigning
+                  name: Artifact Signing_1
+                  identifier: ArtifactSigning_1
+                  spec:
+                    source:
+                      type: docker
+                      spec:
+                        connector: revanthdocker
+                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                    signing:
+                      type: cosign
+                      spec:
+                        private_key: account.test
+                        password: account.testsecret
+                    uploadSignature:
+                      upload: true
