@@ -136,7 +136,7 @@ pipeline:
                     signing:
                       type: cosign
                       spec:
-                        private_key: account.test
-                        password: account.testsecret
+                        private_key: artifact-signing
+                        password: reavnth-artifact-signing
                     uploadSignature:
                       upload: true
