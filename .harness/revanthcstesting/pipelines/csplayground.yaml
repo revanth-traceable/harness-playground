@@ -136,7 +136,7 @@ pipeline:
                     signing:
                       type: cosign
                       spec:
-                        private_key: artifact-signing
+                        private_key: artifact-signing-pub
                         password: reavnth-artifact-signing
                     uploadSignature:
                       upload: true
