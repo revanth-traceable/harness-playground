@@ -101,3 +101,25 @@ pipeline:
                       limits:
                         memory: 500Mi
                         cpu: "0.5"
+              - step:
+                  type: AquaTrivy
+                  name: AquaTrivy_1
+                  identifier: AquaTrivy_1
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: container
+                      detection: auto
+                    advanced:
+                      log:
+                        level: info
+                    privileged: true
+                    connectorRef: revanthdocker
+                    image:
+                      type: docker_v2
+                      tag: <+trigger.commitSha>
+                      name: revanthharness/hello-world-go-ci
+                    sbom:
+                      generate: false
+                      format: spdx-json
