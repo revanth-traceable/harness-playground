@@ -80,3 +80,24 @@ pipeline:
                       type: docker_v2
                       tag: <+trigger.commitSha>
                       name: revanthharness/hello-world-go-ci
+              - step:
+                  type: SscaOrchestration
+                  name: SBOM Orchestration_1
+                  identifier: SBOMOrchestration_1
+                  spec:
+                    mode: generation
+                    tool:
+                      type: Syft
+                      spec:
+                        format: spdx-json
+                    source:
+                      type: docker
+                      spec:
+                        connector: revanthdocker
+                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                    sbom_drift:
+                      base: last_generated_sbom
+                    resources:
+                      limits:
+                        memory: 500Mi
+                        cpu: "0.5"
