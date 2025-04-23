@@ -153,7 +153,7 @@ pipeline:
                     verifySign:
                       type: cosign
                       spec:
-                        public_key: artifact-signing-pub
+                        public_key: artifact-pub
     - stage:
         name: scanning code
         identifier: scanning_cide
