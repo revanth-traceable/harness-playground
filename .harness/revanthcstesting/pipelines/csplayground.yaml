@@ -141,7 +141,7 @@ pipeline:
                     uploadSignature:
                       upload: true
     - stage:
-        name: scanning cide
+        name: scanning code
         identifier: scanning_cide
         description: ""
         type: SecurityTests
@@ -150,6 +150,7 @@ pipeline:
           caching:
             enabled: true
             override: true
+            paths: []
           buildIntelligence:
             enabled: true
           platform:
