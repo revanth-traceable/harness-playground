@@ -140,6 +140,20 @@ pipeline:
                         password: reavnth-artifact-signing
                     uploadSignature:
                       upload: true
+              - step:
+                  type: SscaArtifactVerification
+                  name: Artifact Verification_1
+                  identifier: ArtifactVerification_1
+                  spec:
+                    source:
+                      type: docker
+                      spec:
+                        connector: revanthdocker
+                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                    verifySign:
+                      type: cosign
+                      spec:
+                        public_key: artifact-signing-pub
     - stage:
         name: scanning code
         identifier: scanning_cide
