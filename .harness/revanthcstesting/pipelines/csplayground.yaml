@@ -95,6 +95,11 @@ pipeline:
                       spec:
                         connector: revanthdocker
                         image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                    attestation:
+                      type: cosign
+                      spec:
+                        privateKey: artifact-pub
+                        password: reavnth-artifact-signing
                     sbom_drift:
                       base: last_generated_sbom
                     resources:
