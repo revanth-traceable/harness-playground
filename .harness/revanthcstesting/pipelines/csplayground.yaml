@@ -172,7 +172,7 @@ pipeline:
                     verifyAttestation:
                       type: cosign
                       spec:
-                        publicKey: artifact-signing-pub
+                        publicKey: artifact-pub
                     policy:
                       policySets:
                         - policy_set_sbom_allow_and_deny_list_04_30_16_48
