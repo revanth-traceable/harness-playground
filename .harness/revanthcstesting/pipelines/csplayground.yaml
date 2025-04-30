@@ -159,6 +159,27 @@ pipeline:
                       type: cosign
                       spec:
                         public_key: artifact-pub
+              - step:
+                  type: SscaEnforcement
+                  name: SBOM Policy Enforcement_1
+                  identifier: SBOMPolicyEnforcement_1
+                  spec:
+                    source:
+                      type: docker
+                      spec:
+                        connector: revanthdocker
+                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                    verifyAttestation:
+                      type: cosign
+                      spec:
+                        publicKey: artifact-signing-pub
+                    policy:
+                      policySets:
+                        - policy_set_sbom_allow_and_deny_list_04_30_16_48
+                    resources:
+                      limits:
+                        memory: 500Mi
+                        cpu: "0.5"
     - stage:
         name: scanning code
         identifier: scanning_cide
