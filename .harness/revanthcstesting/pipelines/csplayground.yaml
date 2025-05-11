@@ -145,36 +145,20 @@ pipeline:
                         password: reavnth-artifact-signing
                     uploadSignature:
                       upload: true
-              - parallel:
-                  - step:
-                      type: SscaArtifactVerification
-                      name: Artifact Verification_1
-                      identifier: ArtifactVerification_1
+              - step:
+                  type: SscaArtifactVerification
+                  name: Artifact Verification_1
+                  identifier: ArtifactVerification_1
+                  spec:
+                    source:
+                      type: docker
                       spec:
-                        source:
-                          type: docker
-                          spec:
-                            connector: revanthdocker
-                            image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
-                        verifySign:
-                          type: cosign
-                          spec:
-                            public_key: artifact-pub
-                  - step:
-                      type: SlsaVerification
-                      name: SlsaVerification_1
-                      identifier: SlsaVerification_1
+                        connector: revanthdocker
+                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                    verifySign:
+                      type: cosign
                       spec:
-                        source:
-                          type: Docker
-                          spec:
-                            connector: revanthdocker
-                            image_path: revanthharness/hello-world-go-ci
-                            tag: <+trigger.commitSha>
-                        verify_attestation:
-                          type: cosign
-                          spec:
-                            public_key: artifact-pub
+                        public_key: artifact-pub
               - step:
                   type: SscaEnforcement
                   name: SBOM Policy Enforcement_1
