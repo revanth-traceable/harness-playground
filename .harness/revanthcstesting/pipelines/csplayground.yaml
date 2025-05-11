@@ -116,6 +116,24 @@ pipeline:
                       - <+<+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>.substring(0,7)>
                     caching: true
                     dockerfile: hello-world/Dockerfile
+              - step:
+                  type: Grype
+                  name: localscan
+                  identifier: localscan
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: container
+                      detection: auto
+                    advanced:
+                      log:
+                        level: info
+                    privileged: true
+                    image:
+                      type: local_image
+                      tag: <+pipeline.stages.gobuild.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
+                      name: revanthharness/hello-world-go-ci
     - stage:
         name: scan image
         identifier: scan_image
@@ -137,25 +155,6 @@ pipeline:
           execution:
             steps:
               - step:
-                  type: Grype
-                  name: Grype_1
-                  identifier: Grype_1
-                  spec:
-                    mode: orchestration
-                    config: default
-                    target:
-                      type: container
-                      detection: auto
-                    advanced:
-                      log:
-                        level: info
-                    privileged: true
-                    connectorRef: revanthdocker
-                    image:
-                      type: docker_v2
-                      tag: <+trigger.commitSha>
-                      name: revanthharness/hello-world-go-ci
-              - step:
                   type: SscaOrchestration
                   name: SBOM Orchestration_1
                   identifier: SBOMOrchestration_1
@@ -169,7 +168,7 @@ pipeline:
                       type: docker
                       spec:
                         connector: revanthdocker
-                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                        image: revanthharness/hello-world-go-ci:<+pipeline.stages.gobuild.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
                     attestation:
                       type: cosign
                       spec:
@@ -198,7 +197,7 @@ pipeline:
                     connectorRef: revanthdocker
                     image:
                       type: docker_v2
-                      tag: <+trigger.commitSha>
+                      tag: <+pipeline.stages.gobuild.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
                       name: revanthharness/hello-world-go-ci
                     sbom:
                       generate: false
