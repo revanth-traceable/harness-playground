@@ -117,6 +117,7 @@ pipeline:
                       - <+<+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>.substring(0,7)>
                     caching: true
                     dockerfile: hello-world/Dockerfile
+                    purge: false
               - step:
                   type: Grype
                   name: localscan
