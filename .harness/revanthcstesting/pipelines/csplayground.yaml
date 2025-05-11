@@ -58,7 +58,7 @@ pipeline:
         tags: {}
         when:
           pipelineStatus: Success
-          condition: (<+pipeline.triggerType> == "MANUAL")
+          condition: (<+pipeline.triggerType> == "SKIP")
     - stage:
         name: gobuild
         identifier: gobuild
@@ -80,6 +80,31 @@ pipeline:
             spec: {}
           execution:
             steps:
+              - step:
+                  type: Run
+                  name: bash
+                  identifier: bash
+                  spec:
+                    shell: Sh
+                    command: |-
+                      export commitsha=$(git rev-parse --short=8 HEAD)
+
+                      TRIGGER_TYPE="<+pipeline.triggerType>"
+
+                      echo "TRIGGER_TYPE"
+
+                      if [[ "$TRIGGER_TYPE" == "MANUAL" ]]; then
+                        result=${commitsha}
+                      else
+                        result="dev"
+                      fi
+                    outputVariables:
+                      - name: commitsha
+                        type: String
+                        value: result
+                  when:
+                    stageStatus: Success
+                    condition: (<+pipeline.triggerType> == "MANUAL")
               - step:
                   type: BuildAndPushDockerRegistry
                   name: BuildAndPushDockerRegistry_1
