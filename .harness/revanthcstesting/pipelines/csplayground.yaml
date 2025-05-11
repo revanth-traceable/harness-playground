@@ -11,6 +11,40 @@ pipeline:
         build: <+input>
   stages:
     - stage:
+        name: export
+        identifier: export
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: |-
+                          export commitsha=$(git rev-parse --short=8 HEAD)
+                          echo $commitsha
+                    environmentVariables: []
+                    outputVariables:
+                      - name: commitsha
+                        type: String
+                        value: commitsha
+                    outputAlias:
+                      scope: Pipeline
+                      key: export
+                  timeout: 10m
+        tags: {}
+        when:
+          pipelineStatus: Success
+          condition: (<+pipeline.triggerType> == "MANUAL")
+    - stage:
         name: gobuild
         identifier: gobuild
         description: ""
@@ -41,6 +75,7 @@ pipeline:
                     tags:
                       - <+trigger.commitSha>
                       - <+pipeline.variables.shortcommitsha>
+                      - <+ var processValue = function(triggerType, manualValue, automatedValue) {\n  if (triggerType == "MANUAL") {\n    return manualValue;\n  } else {\n    return automatedValue;\n  }\n};\nprocessValue(<+pipeline.triggerType>, <+pipeline.variables.shortcommitsha>, <+exportedVariables.getValue("Pipeline.export.exportcommitsha")>)>
                     caching: true
                     dockerfile: hello-world/Dockerfile
     - stage:
