@@ -113,7 +113,7 @@ pipeline:
                     connectorRef: revanthdocker
                     repo: revanthharness/hello-world-go-ci
                     tags:
-                      - <+<+pipeline.triggerType>=="MANUAL"?"dev":<+trigger.commitSha>>\n
+                      - <+<+pipeline.triggerType>=="MANUAL"?"dev":<+trigger.commitSha>>
                       - <+<+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>.substring(0,7)>
                     caching: true
                     dockerfile: hello-world/Dockerfile
