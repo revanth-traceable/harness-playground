@@ -33,6 +33,8 @@ pipeline:
 
                           TRIGGER_TYPE="<+pipeline.triggerType>"
 
+                          echo "TRIGGER_TYPE"
+
                           if [[ "$TRIGGER_TYPE" == "MANUAL" ]]; then
                             result=${commitsha}
                           else
