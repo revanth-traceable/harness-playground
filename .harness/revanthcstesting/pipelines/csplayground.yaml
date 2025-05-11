@@ -49,6 +49,12 @@ pipeline:
                       scope: Pipeline
                       key: export
                   timeout: 10m
+          environment:
+            environmentRef: local
+            gitBranch: main
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: default
         tags: {}
         when:
           pipelineStatus: Success
