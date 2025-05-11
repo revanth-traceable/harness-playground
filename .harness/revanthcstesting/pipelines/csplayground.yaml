@@ -89,9 +89,9 @@ pipeline:
                     command: |-
                       export commitsha=$(git rev-parse --short=8 HEAD)
 
-                      TRIGGER_TYPE="<+pipeline.triggerType>"
+                      TRIGGER_TYPE=<+pipeline.triggerType>
 
-                      echo "$(TRIGGER_TYPE)"
+                      echo "${TRIGGER_TYPE}"
 
                       if [[ "$TRIGGER_TYPE" == "MANUAL" ]]; then
                         result=${commitsha}
