@@ -40,6 +40,7 @@ pipeline:
                     repo: revanthharness/hello-world-go-ci
                     tags:
                       - <+trigger.commitSha>
+                      - <+pipeline.variables.shortcommitsha>
                     caching: true
                     dockerfile: hello-world/Dockerfile
     - stage:
@@ -215,3 +216,9 @@ pipeline:
                     advanced:
                       log:
                         level: info
+  variables:
+    - name: shortcommitsha
+      type: String
+      description: ""
+      required: false
+      value: <+<+trigger.commitSha>.substring(0,7)>
