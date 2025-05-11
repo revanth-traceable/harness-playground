@@ -38,7 +38,7 @@ pipeline:
                           if [[ "$TRIGGER_TYPE" == "MANUAL" ]]; then
                             result=${commitsha}
                           else
-                            result="<+pipeline.variables.shortcommitsha>"
+                            result="dev"
                           fi  
                     environmentVariables: []
                     outputVariables:
