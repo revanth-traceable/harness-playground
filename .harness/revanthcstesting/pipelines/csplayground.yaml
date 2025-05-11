@@ -222,3 +222,4 @@ pipeline:
       description: ""
       required: false
       value: <+<+trigger.commitSha>.substring(0,7)>
+  allowStageExecutions: true
