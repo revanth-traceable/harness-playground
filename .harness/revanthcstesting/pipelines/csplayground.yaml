@@ -95,6 +95,11 @@ pipeline:
                       spec:
                         connector: revanthdocker
                         image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                    attestation:
+                      type: cosign
+                      spec:
+                        privateKey: artifact-signing-pub
+                        password: reavnth-artifact-signing
                     sbom_drift:
                       base: last_generated_sbom
                     resources:
@@ -140,3 +145,72 @@ pipeline:
                         password: reavnth-artifact-signing
                     uploadSignature:
                       upload: true
+              - step:
+                  type: SscaArtifactVerification
+                  name: Artifact Verification_1
+                  identifier: ArtifactVerification_1
+                  spec:
+                    source:
+                      type: docker
+                      spec:
+                        connector: revanthdocker
+                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                    verifySign:
+                      type: cosign
+                      spec:
+                        public_key: artifact-pub
+              - step:
+                  type: SscaEnforcement
+                  name: SBOM Policy Enforcement_1
+                  identifier: SBOMPolicyEnforcement_1
+                  spec:
+                    source:
+                      type: docker
+                      spec:
+                        connector: revanthdocker
+                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                    verifyAttestation:
+                      type: cosign
+                      spec:
+                        publicKey: artifact-pub
+                    policy:
+                      policySets:
+                        - policy_set_sbom_allow_and_deny_list_04_30_16_48
+                    resources:
+                      limits:
+                        memory: 500Mi
+                        cpu: "0.5"
+    - stage:
+        name: scanning code
+        identifier: scanning_cide
+        description: ""
+        type: SecurityTests
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: true
+            override: true
+            paths: []
+          buildIntelligence:
+            enabled: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Semgrep
+                  name: Semgrep_1
+                  identifier: Semgrep_1
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: repository
+                      detection: auto
+                    advanced:
+                      log:
+                        level: info
