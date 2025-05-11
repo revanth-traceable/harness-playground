@@ -113,6 +113,7 @@ pipeline:
                     connectorRef: revanthdocker
                     repo: revanthharness/hello-world-go-ci
                     tags:
+                      - <+<+pipeline.triggerType>=="MANUAL"?"dev":<+trigger.commitSha>>\n
                       - <+<+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>.substring(0,7)>
                     caching: true
                     dockerfile: hello-world/Dockerfile
@@ -133,7 +134,8 @@ pipeline:
                     image:
                       type: local_image
                       tag: <+pipeline.stages.gobuild.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
-                      name: revanthharness/hello-world-go-ci
+                      name: hello-world-go-ci
+                      domain: revanthharness
     - stage:
         name: scan image
         identifier: scan_image
@@ -211,7 +213,7 @@ pipeline:
                       type: docker
                       spec:
                         connector: revanthdocker
-                        image: revanthharness/hello-world-go-ci:<+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>
+                        image: revanthharness/hello-world-go-ci:<+pipeline.variables.varcommmitsha>
                     signing:
                       type: cosign
                       spec:
@@ -300,4 +302,9 @@ pipeline:
       description: ""
       required: false
       value: <+<+trigger.commitSha>.substring(0,7)>
+    - name: varcommmitsha
+      type: String
+      description: ""
+      required: true
+      value: <+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>
   allowStageExecutions: true
