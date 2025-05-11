@@ -28,14 +28,21 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: |-
+                        script: |
                           export commitsha=$(git rev-parse --short=8 HEAD)
-                          echo $commitsha
+
+                          TRIGGER_TYPE="<+pipeline.triggerType>"
+
+                          if [[ "$TRIGGER_TYPE" == "MANUAL" ]]; then
+                            result=${commitsha}
+                          else
+                            result="<+pipeline.variables.shortcommitsha>"
+                          fi  
                     environmentVariables: []
                     outputVariables:
                       - name: commitsha
                         type: String
-                        value: commitsha
+                        value: result
                     outputAlias:
                       scope: Pipeline
                       key: export
@@ -75,7 +82,7 @@ pipeline:
                     tags:
                       - <+trigger.commitSha>
                       - <+pipeline.variables.shortcommitsha>
-                      - <+ var processValue = function(triggerType, manualValue, automatedValue) {\n  if (triggerType == "MANUAL") {\n    return manualValue;\n  } else {\n    return automatedValue;\n  }\n};\nprocessValue(<+pipeline.triggerType>, <+pipeline.variables.shortcommitsha>, <+exportedVariables.getValue("Pipeline.export.exportcommitsha")>)>
+                      - <+exportedVariables.getValue("Pipeline.export.commitsha")>
                     caching: true
                     dockerfile: hello-world/Dockerfile
     - stage:
