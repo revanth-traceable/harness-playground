@@ -135,8 +135,7 @@ pipeline:
                     image:
                       type: local_image
                       tag: <+pipeline.stages.gobuild.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
-                      name: hello-world-go-ci
-                      domain: revanthharness
+                      name: revanthharness/hello-world-go-ci
     - stage:
         name: scan image
         identifier: scan_image
