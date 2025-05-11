@@ -211,7 +211,7 @@ pipeline:
                       type: docker
                       spec:
                         connector: revanthdocker
-                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                        image: revanthharness/hello-world-go-ci:<+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>
                     signing:
                       type: cosign
                       spec:
@@ -228,7 +228,7 @@ pipeline:
                       type: docker
                       spec:
                         connector: revanthdocker
-                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                        image: revanthharness/hello-world-go-ci:<+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>
                     verifySign:
                       type: cosign
                       spec:
@@ -254,6 +254,12 @@ pipeline:
                       limits:
                         memory: 500Mi
                         cpu: "0.5"
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Ignore
     - stage:
         name: scanning code
         identifier: scanning_cide
