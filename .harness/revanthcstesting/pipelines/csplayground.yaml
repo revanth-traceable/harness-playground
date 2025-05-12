@@ -117,6 +117,9 @@ pipeline:
                       - <+<+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>.substring(0,8)>
                     caching: true
                     dockerfile: hello-world/Dockerfile
+                    envVariables:
+                      PLUGIN_NO_PUSH: "true"
+                      PLUGIN_TAR_PATH: image.tar
               - step:
                   type: Grype
                   name: localscan
@@ -141,6 +144,21 @@ pipeline:
                           - AllErrors
                         action:
                           type: Ignore
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_2
+                  identifier: BuildAndPushDockerRegistry_2
+                  spec:
+                    connectorRef: revanthdocker
+                    repo: revanthharness/hello-world-go-ci
+                    tags:
+                      - <+<+pipeline.triggerType>=="MANUAL"?"dev":<+trigger.commitSha>>
+                      - <+<+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>.substring(0,8)>
+                    caching: true
+                    dockerfile: hello-world/Dockerfile
+                    envVariables:
+                      PLUGIN_PUSH_ONLY: "true"
+                      PLUGIN_SOURCE_TAR_PATH: image.tar
     - stage:
         name: scan image
         identifier: scan_image
