@@ -52,5 +52,7 @@ pipeline:
                     repo: revanthharness/demo-java-app
                     tags:
                       - <+<+pipeline.triggerType> == "MANUAL" ? "dev":<+trigger.commitSha>>
+                      - <+pipeline.executionId>
+                      - <+trigger.tag>
                     caching: true
                     dockerfile: simple-java-app/Dockerfile
