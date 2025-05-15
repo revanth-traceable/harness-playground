@@ -35,6 +35,10 @@ pipeline:
                     command: |-
                       cd simple-java-app/
                       mvn clean package -DskipTests
+                    resources:
+                      limits:
+                        memory: 100Mi
+                        cpu: "0.2"
               - step:
                   type: BuildAndPushDockerRegistry
                   name: BuildAndPushDockerRegistry
@@ -46,6 +50,9 @@ pipeline:
                       - "<+<+pipeline.triggerType> == \"MANUAL\" ? \"dev-<+pipeline.sequenceId>\":<+expression.isUnresolved(<+trigger.tag>)>?<+codebase.shortCommitSha>: <+trigger.tag> >"
                     caching: true
                     dockerfile: simple-java-app/Dockerfile
+                    resources:
+                      limits:
+                        cpu: "0.5"
               - stepGroup:
                   name: scan
                   identifier: scan
@@ -65,6 +72,10 @@ pipeline:
                                 log:
                                   level: info
                                 fail_on_severity: none
+                              resources:
+                                limits:
+                                  memory: 500Mi
+                                  cpu: "0.5"
                               privileged: true
                               image:
                                 type: docker_v2
@@ -83,6 +94,10 @@ pipeline:
                               advanced:
                                 log:
                                   level: info
+                              resources:
+                                limits:
+                                  memory: 500Mi
+                                  cpu: "0.5"
               - stepGroup:
                   name: scs
                   identifier: scs
