@@ -1,0 +1,8 @@
+environment:
+  name: local
+  identifier: local
+  description: ""
+  tags: {}
+  type: PreProduction
+  orgIdentifier: default
+  projectIdentifier: revanthcstesting

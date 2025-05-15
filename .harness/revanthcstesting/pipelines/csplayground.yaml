@@ -11,6 +11,55 @@ pipeline:
         build: <+input>
   stages:
     - stage:
+        name: export
+        identifier: export
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
+                      spec:
+                        script: |
+                          export commitsha=$(git rev-parse --short=8 HEAD)
+
+                          TRIGGER_TYPE="<+pipeline.triggerType>"
+
+                          echo "TRIGGER_TYPE"
+
+                          if [[ "$TRIGGER_TYPE" == "MANUAL" ]]; then
+                            result=${commitsha}
+                          else
+                            result="dev"
+                          fi  
+                    environmentVariables: []
+                    outputVariables:
+                      - name: commitsha
+                        type: String
+                        value: result
+                    outputAlias:
+                      scope: Pipeline
+                      key: export
+                  timeout: 10m
+          environment:
+            environmentRef: local
+            gitBranch: main
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: default
+        tags: {}
+        when:
+          pipelineStatus: Success
+          condition: (<+pipeline.triggerType> == "SKIP")
+    - stage:
         name: gobuild
         identifier: gobuild
         description: ""
@@ -18,10 +67,11 @@ pipeline:
         spec:
           cloneCodebase: true
           caching:
-            enabled: true
+            enabled: false
             override: true
+            paths: []
           buildIntelligence:
-            enabled: true
+            enabled: false
           platform:
             os: Linux
             arch: Amd64
@@ -31,6 +81,31 @@ pipeline:
           execution:
             steps:
               - step:
+                  type: Run
+                  name: bash
+                  identifier: bash
+                  spec:
+                    shell: Bash
+                    command: |-
+                      export commitsha=$(git rev-parse --short=8 HEAD)
+
+                      TRIGGER_TYPE=<+pipeline.triggerType>
+
+                      echo "${TRIGGER_TYPE}"
+
+                      if [[ "$TRIGGER_TYPE" == "MANUAL" ]]; then
+                        result=${commitsha}
+                      else
+                        result="dev"
+                      fi
+                    outputVariables:
+                      - name: commitsha
+                        type: String
+                        value: result
+                  when:
+                    stageStatus: Success
+                    condition: (<+pipeline.triggerType> == "MANUAL")
+              - step:
                   type: BuildAndPushDockerRegistry
                   name: BuildAndPushDockerRegistry_1
                   identifier: BuildAndPushDockerRegistry_1
@@ -38,9 +113,52 @@ pipeline:
                     connectorRef: revanthdocker
                     repo: revanthharness/hello-world-go-ci
                     tags:
-                      - <+trigger.commitSha>
+                      - <+<+pipeline.triggerType>=="MANUAL"?"dev":<+trigger.commitSha>>
+                      - <+<+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>.substring(0,8)>
                     caching: true
                     dockerfile: hello-world/Dockerfile
+                    envVariables:
+                      PLUGIN_NO_PUSH: "true"
+                      PLUGIN_TAR_PATH: image.tar
+              - step:
+                  type: Grype
+                  name: localscan
+                  identifier: localscan
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: container
+                      detection: auto
+                    advanced:
+                      log:
+                        level: info
+                    privileged: true
+                    image:
+                      type: local_image
+                      tag: <+pipeline.stages.gobuild.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
+                      name: revanthharness/hello-world-go-ci
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Ignore
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_2
+                  identifier: BuildAndPushDockerRegistry_2
+                  spec:
+                    connectorRef: revanthdocker
+                    repo: revanthharness/hello-world-go-ci
+                    tags:
+                      - <+<+pipeline.triggerType>=="MANUAL"?"dev":<+trigger.commitSha>>
+                      - <+<+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>.substring(0,8)>
+                    caching: true
+                    dockerfile: hello-world/Dockerfile
+                    envVariables:
+                      PLUGIN_PUSH_ONLY: "true"
+                      PLUGIN_SOURCE_TAR_PATH: image.tar
     - stage:
         name: scan image
         identifier: scan_image
@@ -62,25 +180,6 @@ pipeline:
           execution:
             steps:
               - step:
-                  type: Grype
-                  name: Grype_1
-                  identifier: Grype_1
-                  spec:
-                    mode: orchestration
-                    config: default
-                    target:
-                      type: container
-                      detection: auto
-                    advanced:
-                      log:
-                        level: info
-                    privileged: true
-                    connectorRef: revanthdocker
-                    image:
-                      type: docker_v2
-                      tag: <+trigger.commitSha>
-                      name: revanthharness/hello-world-go-ci
-              - step:
                   type: SscaOrchestration
                   name: SBOM Orchestration_1
                   identifier: SBOMOrchestration_1
@@ -94,7 +193,7 @@ pipeline:
                       type: docker
                       spec:
                         connector: revanthdocker
-                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                        image: revanthharness/hello-world-go-ci:<+pipeline.stages.gobuild.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
                     attestation:
                       type: cosign
                       spec:
@@ -123,7 +222,7 @@ pipeline:
                     connectorRef: revanthdocker
                     image:
                       type: docker_v2
-                      tag: <+trigger.commitSha>
+                      tag: <+pipeline.stages.gobuild.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
                       name: revanthharness/hello-world-go-ci
                     sbom:
                       generate: false
@@ -137,7 +236,7 @@ pipeline:
                       type: docker
                       spec:
                         connector: revanthdocker
-                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                        image: revanthharness/hello-world-go-ci:<+pipeline.variables.varcommmitsha>
                     signing:
                       type: cosign
                       spec:
@@ -154,7 +253,7 @@ pipeline:
                       type: docker
                       spec:
                         connector: revanthdocker
-                        image: revanthharness/hello-world-go-ci:<+trigger.commitSha>
+                        image: revanthharness/hello-world-go-ci:<+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>
                     verifySign:
                       type: cosign
                       spec:
@@ -180,6 +279,12 @@ pipeline:
                       limits:
                         memory: 500Mi
                         cpu: "0.5"
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Ignore
     - stage:
         name: scanning code
         identifier: scanning_cide
@@ -214,3 +319,15 @@ pipeline:
                     advanced:
                       log:
                         level: info
+  variables:
+    - name: shortcommitsha
+      type: String
+      description: ""
+      required: false
+      value: <+<+trigger.commitSha>.substring(0,7)>
+    - name: varcommmitsha
+      type: String
+      description: ""
+      required: true
+      value: <+pipeline.stages.gobuild.spec.execution.steps.bash.output.outputVariables.commitsha>
+  allowStageExecutions: true
