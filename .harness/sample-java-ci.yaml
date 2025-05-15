@@ -49,8 +49,8 @@ pipeline:
                   identifier: BuildAndPushDockerRegistry_1
                   spec:
                     connectorRef: revanthdocker
-                    repo: revanthharness
+                    repo: revanthharness/demo-java-app
                     tags:
-                      - <+<+pipeline.triggerType> == "MANUAL" ? <+pipeline.executionId>:<+trigger.commitSha>>
+                      - <+<+pipeline.triggerType> == "MANUAL" ? "dev":<+trigger.commitSha>>
                     caching: true
                     dockerfile: simple-java-app/Dockerfile
