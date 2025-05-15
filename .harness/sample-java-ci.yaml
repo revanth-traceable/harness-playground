@@ -45,7 +45,7 @@ pipeline:
                       mvn clean package -DskipTests
               - step:
                   type: BuildAndPushDockerRegistry
-                  name: BuildAndPushDockerRegistry_1
+                  name: BuildAndPushDockerRegistry
                   identifier: BuildAndPushDockerRegistry_1
                   spec:
                     connectorRef: revanthdocker
@@ -54,3 +54,103 @@ pipeline:
                       - "<+<+pipeline.triggerType> == \"MANUAL\" ? \"dev-<+pipeline.sequenceId>\":<+expression.isUnresolved(<+trigger.tag>)>?<+codebase.shortCommitSha>: <+trigger.tag> >"
                     caching: true
                     dockerfile: simple-java-app/Dockerfile
+              - stepGroup:
+                  name: scan
+                  identifier: scan
+                  steps:
+                    - parallel:
+                        - step:
+                            type: Grype
+                            name: Grype_1
+                            identifier: Grype_1
+                            spec:
+                              mode: orchestration
+                              config: default
+                              target:
+                                type: container
+                                detection: auto
+                              advanced:
+                                log:
+                                  level: info
+                                fail_on_severity: none
+                              privileged: true
+                              image:
+                                type: docker_v2
+                                tag: <+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
+                                name: <+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].imageName>
+                        - step:
+                            type: Semgrep
+                            name: Semgrep_1
+                            identifier: Semgrep_1
+                            spec:
+                              mode: orchestration
+                              config: default
+                              target:
+                                type: repository
+                                detection: auto
+                              advanced:
+                                log:
+                                  level: info
+              - stepGroup:
+                  name: scs
+                  identifier: scs
+                  steps:
+                    - parallel:
+                        - step:
+                            type: SscaOrchestration
+                            name: SBOM Orchestration_1
+                            identifier: SBOMOrchestration_1
+                            spec:
+                              mode: generation
+                              tool:
+                                type: Syft
+                                spec:
+                                  format: spdx-json
+                              source:
+                                type: docker
+                                spec:
+                                  connector: revanthdocker
+                                  image: <+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].imageName>:<+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
+                              attestation:
+                                type: cosign
+                                spec:
+                                  privateKey: artifact-signing-pub
+                                  password: reavnth-artifact-signing
+                              sbom_drift:
+                                base: last_generated_sbom
+                              resources:
+                                limits:
+                                  memory: 500Mi
+                                  cpu: "0.5"
+                        - step:
+                            type: SscaArtifactSigning
+                            name: Artifact Signing_1
+                            identifier: ArtifactSigning_1
+                            spec:
+                              source:
+                                type: docker
+                                spec:
+                                  connector: revanthdocker
+                                  image: <+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].imageName>:<+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
+                              signing:
+                                type: cosign
+                                spec:
+                                  private_key: artifact-signing-pub
+                                  password: reavnth-artifact-signing
+                              uploadSignature:
+                                upload: true
+                        - step:
+                            type: provenance
+                            name: SLSA Generation_1
+                            identifier: SLSAGeneration_1
+                            spec:
+                              source:
+                                type: docker
+                                spec:
+                                  connector: revanthdocker
+                                  repo: <+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].imageName>:<+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
+                              attestation:
+                                type: cosign
+                                spec:
+                                  private_key: artifact-signing-pub
+                                  password: reavnth-artifact-signing
