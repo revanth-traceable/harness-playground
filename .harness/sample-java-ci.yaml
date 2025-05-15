@@ -41,3 +41,13 @@ pipeline:
                     image: maven:3.9-eclipse-temurin-11
                     shell: Sh
                     command: mvn clean package -DskipTests
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: revanthdocker
+                    repo: revanthharness
+                    tags:
+                      - <+<+pipeline.triggerType>=="MANUAL"?"dev":<+<+trigger.commitSha>.substring(0,7)>>
+                    caching: true
