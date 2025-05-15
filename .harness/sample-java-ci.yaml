@@ -53,3 +53,4 @@ pipeline:
                     tags:
                       - <+<+pipeline.triggerType> == "MANUAL" ? <+pipeline.executionId>:<+trigger.commitSha>>
                     caching: true
+                    dockerfile: simple-java-app/Dockerfile
