@@ -51,5 +51,5 @@ pipeline:
                     connectorRef: revanthdocker
                     repo: revanthharness
                     tags:
-                      - <+<+pipeline.triggerType>=="MANUAL"?"dev":<+<+trigger.commitSha>.substring(0,7)>>
+                      - <+<+pipeline.triggerType> == "MANUAL" ? <+pipeline.executionId>:<+trigger.commitSha>>
                     caching: true
