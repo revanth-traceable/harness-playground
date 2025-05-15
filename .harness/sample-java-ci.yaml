@@ -161,11 +161,9 @@ pipeline:
                                 spec:
                                   private_key: artifact-signing-pub
                                   password: reavnth-artifact-signing
-          infrastructure:
-            type: KubernetesDirect
-            spec:
-              connectorRef: kubernetesrevanthconnector
-              namespace: demo-java
-              automountServiceAccountToken: true
-              nodeSelector: {}
-              os: Linux
+          platform:
+            os: Linux
+            arch: Arm64
+          runtime:
+            type: Cloud
+            spec: {}
