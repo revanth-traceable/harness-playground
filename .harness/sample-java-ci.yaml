@@ -40,7 +40,9 @@ pipeline:
                     connectorRef: public
                     image: maven:3.9-eclipse-temurin-11
                     shell: Sh
-                    command: mvn clean package -DskipTests
+                    command: |-
+                      cd simple-java-app/
+                      mvn clean package -DskipTests
               - step:
                   type: BuildAndPushDockerRegistry
                   name: BuildAndPushDockerRegistry_1
