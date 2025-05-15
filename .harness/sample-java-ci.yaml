@@ -1,0 +1,56 @@
+pipeline:
+  name: mvn-java-app-ci
+  identifier: mvnjavaappci
+  projectIdentifier: revanthcstesting
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: account.revanthplayground
+        build: <+input>
+  stages:
+    - stage:
+        name: ci
+        identifier: ci
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: true
+            override: false
+          buildIntelligence:
+            enabled: true
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: kubernetesrevanthconnector
+              namespace: demo-java
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Run_1
+                  identifier: Run_1
+                  spec:
+                    connectorRef: public
+                    image: maven:3.9-eclipse-temurin-11
+                    shell: Sh
+                    command: |-
+                      cd simple-java-app/
+                      mvn clean package -DskipTests
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: revanthdocker
+                    repo: revanthharness
+                    tags:
+                      - <+<+pipeline.triggerType> == "MANUAL" ? <+pipeline.executionId>:<+trigger.commitSha>>
+                    caching: true
+                    dockerfile: simple-java-app/Dockerfile

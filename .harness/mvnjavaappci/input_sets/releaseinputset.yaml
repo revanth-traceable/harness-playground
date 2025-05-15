@@ -1,0 +1,14 @@
+inputSet:
+  name: release-inputset
+  identifier: releaseinputset
+  orgIdentifier: default
+  projectIdentifier: revanthcstesting
+  pipeline:
+    identifier: mvnjavaappci
+    properties:
+      ci:
+        codebase:
+          build:
+            type: tag
+            spec:
+              tag: <+trigger.tag>
