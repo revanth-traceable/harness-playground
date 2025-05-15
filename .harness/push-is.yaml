@@ -1,0 +1,14 @@
+inputSet:
+  name: push-is
+  identifier: pushis
+  orgIdentifier: default
+  projectIdentifier: revanthcstesting
+  pipeline:
+    identifier: mvnjavaappci
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: <+trigger.branch>
