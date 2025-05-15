@@ -37,7 +37,7 @@ pipeline:
                   name: Run_1
                   identifier: Run_1
                   spec:
-                    connectorRef: revanthdocker
-                    image: ubuntu:latest
+                    connectorRef: public
+                    image: maven:3.9-eclipse-temurin-11
                     shell: Sh
-                    command: sleep 5
+                    command: mvn clean package -DskipTests
