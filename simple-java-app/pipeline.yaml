@@ -1,0 +1,102 @@
+pipeline:
+  name: devsecops-demo-pipeline
+  identifier: devsecops_demo_pipeline
+  projectIdentifier: your_project_id
+  orgIdentifier: your_org_id
+  tags: {}
+  stages:
+    - stage:
+        name: Build
+        identifier: Build
+        type: CI
+        spec:
+          cloneCodebase: true
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: your_k8s_connector_id
+              namespace: harness-builds
+              serviceAccount: harness-delegate
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Maven Build
+                  identifier: maven_build
+                  spec:
+                    connectorRef: your_k8s_connector_id
+                    image: maven:3.8.6-openjdk-11
+                    command: |
+                      mvn clean package -DskipTests
+                    privileged: false
+              - step:
+                  type: Run
+                  name: Run Tests
+                  identifier: run_tests
+                  spec:
+                    connectorRef: your_k8s_connector_id
+                    image: maven:3.8.6-openjdk-11
+                    command: |
+                      mvn test
+                    privileged: false
+              - step:
+                  type: Run
+                  name: Run SAST Scan
+                  identifier: sast_scan
+                  spec:
+                    connectorRef: your_k8s_connector_id
+                    image: sonarqube/scanner-cli:latest
+                    command: |
+                      echo "Running SAST scan with SonarQube"
+                      # sonar-scanner
+                    privileged: false
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: Build and Push Docker Image
+                  identifier: build_push_docker
+                  spec:
+                    connectorRef: your_docker_connector_id
+                    repo: your_repo/devsecops-demo
+                    tags:
+                      - <+pipeline.sequenceId>
+                      - latest
+    - stage:
+        name: Deploy
+        identifier: Deploy
+        type: Deployment
+        spec:
+          deploymentType: Kubernetes
+          service:
+            serviceRef: devsecops_demo
+          environment:
+            environmentRef: Development
+            infrastructureDefinitions:
+              - identifier: k8s_dev
+          execution:
+            steps:
+              - step:
+                  name: Container Scan
+                  identifier: container_scan
+                  type: Security
+                  spec:
+                    connectorRef: your_security_connector_id
+                    image: your_repo/devsecops-demo:<+pipeline.sequenceId>
+                    policy:
+                      severity: high
+              - step:
+                  name: Helm Deploy
+                  identifier: helm_deploy
+                  type: HelmDeploy
+                  spec:
+                    helmVersion: v3
+                    connectorRef: your_k8s_connector_id
+                    namespace: dev
+                    releaseName: devsecops-demo
+                    chartRef: ./helm/devsecops-demo
+                    valuesFiles:
+                      - values.yaml
+                    values:
+                      - name: image.repository
+                        value: your_repo/devsecops-demo
+                      - name: image.tag
+                        value: <+pipeline.sequenceId>
