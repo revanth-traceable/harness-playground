@@ -59,9 +59,8 @@ pipeline:
                       type: Plugin
                       name: publish
                       spec:
-                        connectorRef: account.docker
+                        connectorRef: public
                         image: plugins/github-release
-                        type: Plugin
                         settings:
                           api_key: xxxxxxxx
                           files: dist/*
