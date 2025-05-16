@@ -62,6 +62,7 @@ pipeline:
                         connectorRef: public
                         image: plugins/github-release
                         settings:
+                          base_url: https://github.com/revanth-traceable
                           api_key: <+secrets.getValue("github-pat")>
                           files: simple-java-app/target/*
                   - step:
