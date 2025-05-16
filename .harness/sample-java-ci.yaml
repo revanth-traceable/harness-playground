@@ -79,10 +79,19 @@ pipeline:
                     command: |-
                       cd simple-java-app/helm/devsecops-demo
                       BASE_VERSION=$(grep 'version:' Chart.yaml | awk '{print $2}')
-                      CHART_VERSION="<+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>"
+                      TAG="<+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>"
+
+                            if [[ "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                              CHART_VERSION=${TAG}
+                            else
+                              # For all non-tagged builds
+                              CHART_VERSION="${BASE_VERSION}-${TAG}"
+                            fi
 
                       # Update the Chart.yaml with this version
                       sed -i "s/version: ${BASE_VERSION}/version: ${CHART_VERSION}/" Chart.yaml
+
+
 
                       helm registry login pkg.harness.io -u sai.veera@harness.io -p <+secrets.getValue("har-helm-token")>
                       helm package .
