@@ -64,6 +64,19 @@ pipeline:
                         settings:
                           api_key: <+secrets.getValue("github-pat")>
                           files: simple-java-app/target/*
+                  - step:
+                      identifier: helm_push
+                      type: Plugin
+                      name: helm_push
+                      spec:
+                        connectorRef: public
+                        image: plugins/helm-push
+                        type: Plugin
+                        settings:
+                          registry_url: pkg.harness.io
+                          registry_username: sai.veera@harness.io
+                          registry_password: <+secrets.getValue("har_access_token")>
+                          chart_path: demo-java
               - stepGroup:
                   name: scan
                   identifier: scan
