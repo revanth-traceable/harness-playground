@@ -26,7 +26,7 @@ pipeline:
             steps:
               - step:
                   type: Run
-                  name: Run_1
+                  name: build
                   identifier: Run_1
                   spec:
                     connectorRef: public
@@ -57,7 +57,7 @@ pipeline:
                   - step:
                       identifier: publish_plugin
                       type: Plugin
-                      name: publish
+                      name: git release
                       spec:
                         connectorRef: public
                         image: plugins/github-release
