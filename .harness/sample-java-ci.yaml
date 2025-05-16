@@ -65,20 +65,6 @@ pipeline:
                           base_url: https://github.com/revanth-traceable
                           api_key: <+secrets.getValue("github-pat")>
                           files: simple-java-app/target/*
-                  - step:
-                      identifier: helm_push
-                      type: Plugin
-                      name: helm_push
-                      spec:
-                        connectorRef: public
-                        image: plugins/helm-push
-                        type: Plugin
-                        settings:
-                          registry_url: registry.hub.docker.com
-                          registry_username: revanthharness
-                          registry_password: <+secrets.getValue("revanth-docker-pat")>
-                          chart_path: demo-java
-                          registry_namespace: demo-java
               - stepGroup:
                   name: scan
                   identifier: scan
