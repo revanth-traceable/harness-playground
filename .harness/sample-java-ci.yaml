@@ -68,6 +68,18 @@ pipeline:
                       when:
                         stageStatus: Success
                         condition: "false"
+              - step:
+                  type: Run
+                  name: helm-package
+                  identifier: helmpackage
+                  spec:
+                    connectorRef: public
+                    image: alpine/helm:3.11.1
+                    shell: Bash
+                    command: |-
+                      helm registry login pkg.harness.io -u sai.veera@harness.io -p <+secrets.getValue("har-helm-token")>
+                      helm package simple-java-app/helm/devsecops-demo
+                      helm push demo-app-<+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag> oci://pkg.harness.io/sl32ke39qekmavwtgmagow/har-helm-repo
               - stepGroup:
                   name: scan
                   identifier: scan
