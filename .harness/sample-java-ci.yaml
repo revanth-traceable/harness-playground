@@ -62,7 +62,7 @@ pipeline:
                         connectorRef: public
                         image: plugins/github-release
                         settings:
-                          api_key: <+secrets.getValue("revanth-pat")>
+                          api_key: <+secrets.getValue("github-pat")>
                           files: simple-java-app/target/*
               - stepGroup:
                   name: scan
