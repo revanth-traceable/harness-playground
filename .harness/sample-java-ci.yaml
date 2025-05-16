@@ -73,9 +73,9 @@ pipeline:
                         image: plugins/helm-push
                         type: Plugin
                         settings:
-                          registry_url: pkg.harness.io
-                          registry_username: sai.veera@harness.io
-                          registry_password: <+secrets.getValue("har-access-token")>
+                          registry_url: registry.hub.docker.com
+                          registry_username: revanthharness
+                          registry_password: <+secrets.getValue("revanth-docker-pat")>
                           chart_path: demo-java
               - stepGroup:
                   name: scan
