@@ -75,7 +75,7 @@ pipeline:
                         settings:
                           registry_url: pkg.harness.io
                           registry_username: sai.veera@harness.io
-                          registry_password: <+secrets.getValue("har_access_token")>
+                          registry_password: <+secrets.getValue("har-access-token")>
                           chart_path: demo-java
               - stepGroup:
                   name: scan
