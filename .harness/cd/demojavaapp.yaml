@@ -24,7 +24,7 @@ service:
               helmVersion: V380
               skipResourceVersioning: false
               enableDeclarativeRollback: false
-              fetchHelmChartMetadata: false
+              fetchHelmChartMetadata: true
         - manifest:
             identifier: demovalues
             type: Values
@@ -37,6 +37,15 @@ service:
                   paths:
                     - simple-java-app/helm/devsecops-demo/values-prod.yaml
                   branch: main
+        - manifest:
+            identifier: imageoverride
+            type: Values
+            spec:
+              store:
+                type: Harness
+                spec:
+                  files:
+                    - /values.yaml
       variables:
         - name: releaseName
           type: String
