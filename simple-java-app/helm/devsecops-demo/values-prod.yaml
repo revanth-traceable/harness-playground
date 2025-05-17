@@ -1,21 +1,21 @@
 # Production values for devsecops-demo
 # This is a YAML-formatted file.
 
-replicaCount: 3
+replicaCount: 1
 
 image:
   pullPolicy: Always
 
 resources:
   limits:
-    cpu: 1000m
-    memory: 1024Mi
+    cpu: 100m
+    memory: 100Mi
   requests:
-    cpu: 500m
-    memory: 512Mi
+    cpu: 100m
+    memory: 100Mi
 
 autoscaling:
-  enabled: true
+  enabled: false
   minReplicas: 3
   maxReplicas: 10
   targetCPUUtilizationPercentage: 70
@@ -30,7 +30,7 @@ env:
 
 # Pod disruption budget
 podDisruptionBudget:
-  enabled: true
+  enabled: false
   minAvailable: 2
 
 # For better security in production
