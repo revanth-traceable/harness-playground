@@ -1,0 +1,13 @@
+infrastructureDefinition:
+  name: dev-kubernetes
+  identifier: devkubernetes
+  orgIdentifier: default
+  projectIdentifier: revanthcstesting
+  environmentRef: csdevcluster
+  deploymentType: NativeHelm
+  type: KubernetesDirect
+  spec:
+    connectorRef: kubernetesrevanthconnector
+    namespace: demo-java
+    releaseName: <+serviceVariables.releaseName>
+  allowSimultaneousDeployments: false
