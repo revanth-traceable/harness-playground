@@ -90,8 +90,7 @@ pipeline:
 
                       # Update the Chart.yaml with this version
                       sed -i "s/version: ${BASE_VERSION}/version: ${CHART_VERSION}/" Chart.yaml
-
-
+                      yq e '.image.tag = env(TAG)' -i values.yaml
 
                       helm registry login pkg.harness.io -u sai.veera@harness.io -p <+secrets.getValue("har-helm-token")>
                       helm package .
