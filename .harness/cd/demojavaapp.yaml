@@ -20,7 +20,7 @@ service:
                   basePath: sl32ke39qekmavwtgmagow/har-helm-repo
               chartName: devsecops-demo
               subChartPath: ""
-              chartVersion: ""
+              chartVersion: <+input>
               helmVersion: V380
               skipResourceVersioning: false
               enableDeclarativeRollback: false
