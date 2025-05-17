@@ -95,7 +95,7 @@ pipeline:
 
                       helm registry login pkg.harness.io -u sai.veera@harness.io -p <+secrets.getValue("har-helm-token")>
                       helm package .
-                      helm push devsecops-demo-${CHART_VERSION}.tgz oci://pkg.harness.io/sl32ke39qekmavwtgmagow/har-helm-repo
+                      helm push demo-java-app-${CHART_VERSION}.tgz oci://pkg.harness.io/sl32ke39qekmavwtgmagow/har-helm-repo
               - stepGroup:
                   name: scan
                   identifier: scan
