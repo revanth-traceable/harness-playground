@@ -24,6 +24,14 @@ pipeline:
           execution:
             steps:
               - step:
+                  identifier: lockNamespace
+                  name: Lock namespace
+                  timeout: 1d
+                  type: Queue
+                  spec:
+                    key: <+env.name>-<+infra.namespace>
+                    scope: Pipeline
+              - step:
                   name: Helm Deployment
                   identifier: helmDeployment
                   type: HelmDeploy
