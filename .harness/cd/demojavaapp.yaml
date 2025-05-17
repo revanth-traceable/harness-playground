@@ -1,0 +1,46 @@
+service:
+  name: demo-java-app
+  identifier: demojavaapp
+  orgIdentifier: default
+  projectIdentifier: revanthcstesting
+  serviceDefinition:
+    spec:
+      manifests:
+        - manifest:
+            identifier: devsecopsdemo
+            type: HelmChart
+            spec:
+              store:
+                type: OciHelmChart
+                spec:
+                  config:
+                    type: Generic
+                    spec:
+                      connectorRef: harhelmconnector
+                  basePath: sl32ke39qekmavwtgmagow/har-helm-repo
+              chartName: devsecops-demo
+              subChartPath: ""
+              chartVersion: ""
+              helmVersion: V380
+              skipResourceVersioning: false
+              enableDeclarativeRollback: false
+              fetchHelmChartMetadata: false
+        - manifest:
+            identifier: demovalues
+            type: Values
+            spec:
+              store:
+                type: Github
+                spec:
+                  connectorRef: account.revanthplayground
+                  gitFetchType: Branch
+                  paths:
+                    - simple-java-app/helm/devsecops-demo/values-prod.yaml
+                  branch: main
+      variables:
+        - name: releaseName
+          type: String
+          description: ""
+          required: false
+          value: demo-java-app
+    type: NativeHelm
