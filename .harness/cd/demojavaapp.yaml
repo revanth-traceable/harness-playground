@@ -43,4 +43,15 @@ service:
           description: ""
           required: false
           value: demo-java-app
+      artifacts:
+        primary:
+          primaryArtifactRef: <+input>
+          sources:
+            - spec:
+                connectorRef: revanthdocker
+                imagePath: revanthharness/demo-java-app
+                tag: <+input>
+                digest: ""
+              identifier: demojavaapp
+              type: DockerRegistry
     type: NativeHelm
