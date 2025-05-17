@@ -4,13 +4,13 @@
 replicaCount: 2
 
 image:
-  repository: devsecops-demo
+  repository: revanthharness/demo-java-app
   pullPolicy: IfNotPresent
   tag: "latest"  # Overridden in CI/CD
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "demo-java-app"
+fullnameOverride: "demo-java-app"
 
 serviceAccount:
   # Specifies whether a service account should be created
