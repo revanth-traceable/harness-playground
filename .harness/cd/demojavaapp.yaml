@@ -18,7 +18,7 @@ service:
                     spec:
                       connectorRef: harhelmconnector
                   basePath: sl32ke39qekmavwtgmagow/har-helm-repo
-              chartName: devsecops-demo
+              chartName: demo-java-app
               subChartPath: ""
               chartVersion: <+input>
               helmVersion: V380
