@@ -52,3 +52,58 @@ pipeline:
                 - AllErrors
               action:
                 type: StageRollback
+    - stage:
+        name: security
+        identifier: security
+        description: ""
+        type: SecurityTests
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: false
+            override: false
+            paths: []
+          buildIntelligence:
+            enabled: false
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - parallel:
+                  - step:
+                      type: SscaArtifactVerification
+                      name: Artifact Verification_1
+                      identifier: ArtifactVerification_1
+                      spec:
+                        source:
+                          type: docker
+                          spec:
+                            connector: revanthdocker
+                            image: <+pipeline.stages.deploy.spec.artifacts.primary.imagePath>:<+pipeline.stages.deploy.spec.artifacts.primary.tag>
+                        verifySign:
+                          type: cosign
+                          spec:
+                            public_key: artifact-pub
+                  - step:
+                      type: SlsaVerification
+                      name: SlsaVerification_1
+                      identifier: SlsaVerification_1
+                      spec:
+                        source:
+                          type: Docker
+                          spec:
+                            connector: revanthdocker
+                            image_path: <+pipeline.stages.deploy.spec.artifacts.primary.imagePath>:<+pipeline.stages.deploy.spec.artifacts.primary.tag>
+                        verify_attestation:
+                          type: cosign
+                          spec:
+                            public_key: artifact-pub
+  properties:
+    ci:
+      codebase:
+        connectorRef: account.revanthplayground
+        build: <+input>
