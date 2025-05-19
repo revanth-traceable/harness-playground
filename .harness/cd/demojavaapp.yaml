@@ -25,27 +25,9 @@ service:
               skipResourceVersioning: false
               enableDeclarativeRollback: false
               fetchHelmChartMetadata: true
-        - manifest:
-            identifier: demovalues
-            type: Values
-            spec:
-              store:
-                type: Github
-                spec:
-                  connectorRef: account.revanthplayground
-                  gitFetchType: Branch
-                  paths:
-                    - simple-java-app/helm/devsecops-demo/values-prod.yaml
-                  branch: main
-        - manifest:
-            identifier: imageoverride
-            type: Values
-            spec:
-              store:
-                type: Harness
-                spec:
-                  files:
-                    - /values.yaml
+              valuesPaths:
+                - values.yaml
+                - values-prod.yaml
       variables:
         - name: releaseName
           type: String
