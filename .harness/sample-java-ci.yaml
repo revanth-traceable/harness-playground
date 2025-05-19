@@ -237,7 +237,7 @@ pipeline:
                                   identifier: devsecopsdemo
                                   type: HelmChart
                                   spec:
-                                    chartVersion: 1.2.0-dev-43
+                                    chartVersion: <+pipeline.stages.helm-package.spec.execution.steps.bash.output.outputVariables.chart_version>
                             artifacts:
                               primary:
                                 primaryArtifactRef: demojavaapp
