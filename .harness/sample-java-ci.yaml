@@ -241,7 +241,7 @@ pipeline:
                                   identifier: devsecopsdemo
                                   type: HelmChart
                                   spec:
-                                    chartVersion: <+pipeline.stages.helm-package.spec.execution.steps.bash.output.outputVariables.chart_version>
+                                    chartVersion: <+pipeline.stages.ci.spec.execution.steps.helmpackage.output.outputVariables.chart_version>
                             artifacts:
                               primary:
                                 primaryArtifactRef: demojavaapp
@@ -252,8 +252,6 @@ pipeline:
                                       tag: <+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
                     environment:
                       environmentRef: csdevcluster
-                      environmentInputs: <+input>
-                      serviceOverrideInputs: <+input>
                       infrastructureDefinitions:
                         - identifier: devkubernetes
             properties:
