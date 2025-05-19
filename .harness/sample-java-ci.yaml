@@ -96,6 +96,10 @@ pipeline:
                       helm registry login pkg.harness.io -u sai.veera@harness.io -p <+secrets.getValue("har-helm-token")>
                       helm package .
                       helm push demo-java-app-${CHART_VERSION}.tgz oci://pkg.harness.io/sl32ke39qekmavwtgmagow/har-helm-repo
+                    outputVariables:
+                      - name: chart_version
+                        type: String
+                        value: CHART_VERSION
               - stepGroup:
                   name: scan
                   identifier: scan
@@ -248,6 +252,8 @@ pipeline:
                                       tag: <+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
                     environment:
                       environmentRef: csdevcluster
+                      environmentInputs: <+input>
+                      serviceOverrideInputs: <+input>
                       infrastructureDefinitions:
                         - identifier: devkubernetes
             properties:
