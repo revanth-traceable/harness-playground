@@ -210,3 +210,47 @@ pipeline:
           runtime:
             type: Cloud
             spec: {}
+    - stage:
+        name: cd
+        identifier: cd
+        description: ""
+        type: Pipeline
+        spec:
+          org: default
+          pipeline: deployservice
+          project: revanthcstesting
+          inputs:
+            identifier: deployservice
+            stages:
+              - stage:
+                  identifier: deploy
+                  type: Deployment
+                  spec:
+                    service:
+                      serviceRef: demojavaapp
+                      serviceInputs:
+                        serviceDefinition:
+                          type: NativeHelm
+                          spec:
+                            manifests:
+                              - manifest:
+                                  identifier: devsecopsdemo
+                                  type: HelmChart
+                                  spec:
+                                    chartVersion: 1.2.0-dev-43
+                            artifacts:
+                              primary:
+                                primaryArtifactRef: demojavaapp
+                                sources:
+                                  - identifier: demojavaapp
+                                    type: DockerRegistry
+                                    spec:
+                                      tag: <+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
+                    environment:
+                      environmentRef: csdevcluster
+                      infrastructureDefinitions:
+                        - identifier: devkubernetes
+            properties:
+              ci:
+                codebase:
+                  build: <+input>
