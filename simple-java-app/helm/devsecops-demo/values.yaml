@@ -6,7 +6,7 @@ replicaCount: 2
 image:
   repository: revanthharness/demo-java-app
   pullPolicy: IfNotPresent
-  tag: "latest"  # Overridden in CI/CD
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: "demo-java-app"

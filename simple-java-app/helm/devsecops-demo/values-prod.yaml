@@ -4,7 +4,9 @@
 replicaCount: 1
 
 image:
-  pullPolicy: Always
+  repository: <+artifact.imagePath>
+  pullPolicy: IfNotPresent
+  tag: <+artifact.tag>
 
 resources:
   limits:
