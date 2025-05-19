@@ -49,7 +49,7 @@ pipeline:
                         repo: revanthharness/demo-java-app
                         tags:
                           - "<+<+pipeline.triggerType> == \"MANUAL\" ? \"dev-\" + <+pipeline.sequenceId> : <+expression.isUnresolved(<+trigger.tag>)>?<+codebase.shortCommitSha>: <+trigger.tag> >"
-                        caching: true
+                        caching: false
                         dockerfile: simple-java-app/Dockerfile
                         resources:
                           limits:
