@@ -208,6 +208,27 @@ pipeline:
                                 spec:
                                   private_key: artifact-signing-pub
                                   password: reavnth-artifact-signing
+              - step:
+                  type: SscaEnforcement
+                  name: SBOM Policy Enforcement_1
+                  identifier: SBOMPolicyEnforcement_1
+                  spec:
+                    source:
+                      type: docker
+                      spec:
+                        connector: revanthdocker
+                        image: <+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].imageName>:<+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
+                    verifyAttestation:
+                      type: cosign
+                      spec:
+                        publicKey: artifact-pub
+                    policy:
+                      policySets:
+                        - policy_set_sbom_allow_and_deny_list_04_30_16_48
+                    resources:
+                      limits:
+                        memory: 500Mi
+                        cpu: "0.5"
           platform:
             os: Linux
             arch: Amd64
