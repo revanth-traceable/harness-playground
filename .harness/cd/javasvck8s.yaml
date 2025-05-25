@@ -1,0 +1,5 @@
+service:
+  name: java-svc-k8s
+  identifier: javasvck8s
+  orgIdentifier: default
+  projectIdentifier: revanthcstesting
