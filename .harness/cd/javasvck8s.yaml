@@ -29,4 +29,10 @@ service:
                 digest: ""
               identifier: javaapp
               type: DockerRegistry
+      variables:
+        - name: releaseName
+          type: String
+          description: ""
+          required: false
+          value: demo-java-app-k8s
     type: Kubernetes
