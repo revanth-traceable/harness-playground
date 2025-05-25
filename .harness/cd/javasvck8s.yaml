@@ -3,3 +3,30 @@ service:
   identifier: javasvck8s
   orgIdentifier: default
   projectIdentifier: revanthcstesting
+  gitOpsEnabled: false
+  serviceDefinition:
+    spec:
+      manifests:
+        - manifest:
+            identifier: javadeployment
+            type: K8sManifest
+            spec:
+              store:
+                type: Harness
+                spec:
+                  files:
+                    - /deployment.yaml
+              skipResourceVersioning: false
+              enableDeclarativeRollback: false
+      artifacts:
+        primary:
+          primaryArtifactRef: <+input>
+          sources:
+            - spec:
+                connectorRef: revanthdocker
+                imagePath: revanthharness/demo-java-app
+                tag: <+input>
+                digest: ""
+              identifier: javaapp
+              type: DockerRegistry
+    type: Kubernetes
