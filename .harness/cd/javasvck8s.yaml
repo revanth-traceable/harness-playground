@@ -18,6 +18,15 @@ service:
                     - /deployment.yaml
               skipResourceVersioning: false
               enableDeclarativeRollback: false
+        - manifest:
+            identifier: valuesk8s
+            type: Values
+            spec:
+              store:
+                type: Harness
+                spec:
+                  files:
+                    - /values-k8s.yaml
       artifacts:
         primary:
           primaryArtifactRef: <+input>
