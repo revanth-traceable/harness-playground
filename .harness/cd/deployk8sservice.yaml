@@ -11,40 +11,34 @@ pipeline:
         description: ""
         type: Deployment
         spec:
-          deploymentType: NativeHelm
+          deploymentType: Kubernetes
+          execution:
+            steps:
+              - step:
+                  type: K8sRollingDeploy
+                  name: K8sRollingDeploy_1
+                  identifier: K8sRollingDeploy_1
+                  spec:
+                    skipDryRun: false
+                    pruningEnabled: false
+                  timeout: 10m
+            rollbackSteps: []
           service:
-            serviceRef: <+input>
-            serviceInputs: <+input>
+            serviceRef: javasvck8s
+            serviceInputs:
+              serviceDefinition:
+                type: Kubernetes
+                spec:
+                  artifacts:
+                    primary:
+                      primaryArtifactRef: <+input>
+                      sources: <+input>
           environment:
             environmentRef: <+input>
             deployToAll: false
             environmentInputs: <+input>
             serviceOverrideInputs: <+input>
             infrastructureDefinitions: <+input>
-          execution:
-            steps:
-              - step:
-                  identifier: lockNamespace
-                  name: Lock namespace
-                  timeout: 1d
-                  type: Queue
-                  spec:
-                    key: <+env.name>-<+infra.namespace>
-                    scope: Pipeline
-              - step:
-                  name: Helm Deployment
-                  identifier: helmDeployment
-                  type: HelmDeploy
-                  timeout: 10m
-                  spec:
-                    skipDryRun: false
-            rollbackSteps:
-              - step:
-                  name: Helm Rollback
-                  identifier: helmRollback
-                  type: HelmRollback
-                  timeout: 10m
-                  spec: {}
         tags: {}
         failureStrategies:
           - onFailure:
