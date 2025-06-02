@@ -100,6 +100,20 @@ pipeline:
                       - name: chart_version
                         type: String
                         value: CHART_VERSION
+              - step:
+                  type: Plugin
+                  name: Plugin_2
+                  identifier: Plugin_2
+                  spec:
+                    connectorRef: revanthdocker
+                    image: revanthharness/drone-helm-push:latest
+                    settings:
+                      chart_path: simple-java-app/helm/devsecops-demo
+                      registry_url: pkg.harness.io/sl32ke39qekmavwtgmagow/har-helm-repo
+                      username: sai.veera@harness.io
+                      password: <+secrets.getValue("har-helm-token")>
+                      chart_version: 1.2.11
+                      app_version: 1.2.11
               - stepGroup:
                   name: scan
                   identifier: scan
