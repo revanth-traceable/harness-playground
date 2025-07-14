@@ -35,6 +35,8 @@ pipeline:
                       echo this is <+strategy.identifierPostFix>
 
                       echo <+pipeline.stages.testloop.spec.execution.steps.Run_1<+strategy.identifierPostFix>.name>
+
+                      echo <+pipeline.stages.testloop<+strategy.identifierPostFix>.spec.execution.steps.Run_1.spec.outputVariables[0].value>
                     outputVariables:
                       - name: test_output
                         type: String
