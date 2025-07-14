@@ -31,6 +31,6 @@ pipeline:
                   identifier: Run_1
                   spec:
                     shell: Sh
-                    command: echo this is <+repeat.item>
+                    command: echo this is <+strategy.identifierPostFix>
                   strategy:
                     parallelism: 3
