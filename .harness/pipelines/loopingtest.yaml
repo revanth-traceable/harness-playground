@@ -35,5 +35,5 @@ pipeline:
                       echo this is <+strategy.identifierPostFix>
 
                       echo <+pipeline.stages.testloop.spec.execution.steps.Run_1<+strategy.identifierPostFix>.name>
-                  strategy:
-                    parallelism: 3
+        strategy:
+          parallelism: 3
