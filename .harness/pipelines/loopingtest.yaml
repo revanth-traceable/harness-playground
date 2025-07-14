@@ -33,8 +33,4 @@ pipeline:
                     shell: Sh
                     command: echo this is <+repeat.item>
                   strategy:
-                    repeat:
-                      items:
-                        - host1
-                        - host2
-                        - host3
+                    parallelism: 3
