@@ -13,10 +13,11 @@ pipeline:
         spec:
           cloneCodebase: false
           caching:
-            enabled: true
+            enabled: false
             override: false
+            paths: []
           buildIntelligence:
-            enabled: true
+            enabled: false
           platform:
             os: Linux
             arch: Amd64
