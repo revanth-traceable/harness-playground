@@ -31,6 +31,9 @@ pipeline:
                   identifier: Run_1
                   spec:
                     shell: Sh
-                    command: echo this is <+strategy.identifierPostFix>
+                    command: |-
+                      echo this is <+strategy.identifierPostFix>
+
+                      echo <+pipeline.stages.testloop.spec.execution.steps.Run_1<+strategy.identifierPostFix>.name>
                   strategy:
                     parallelism: 3
