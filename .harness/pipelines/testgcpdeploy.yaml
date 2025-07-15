@@ -1,0 +1,39 @@
+pipeline:
+  name: test-gcp-deploy
+  identifier: testgcpdeploy
+  projectIdentifier: revanthcstesting
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: helm deploy
+        identifier: helm_deploy
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: NativeHelm
+          execution:
+            steps:
+              - step:
+                  type: HelmDeploy
+                  name: HelmDeploy_1
+                  identifier: HelmDeploy_1
+                  spec:
+                    skipDryRun: false
+                    ignoreReleaseHistFailStatus: false
+                  timeout: 10m
+            rollbackSteps: []
+          service:
+            serviceRef: sampleapp
+          environment:
+            environmentRef: rrgcpenv
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: gcphelm
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
