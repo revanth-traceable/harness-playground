@@ -95,15 +95,6 @@ pipeline:
                                       type: ConfigMap
                                       spec:
                                         name: myconfig
-                            step:
-                              type: Run
-                              name: Run_1
-                              identifier: Run_1
-                              spec:
-                                connectorRef: public
-                                image: alpine:latest
-                                shell: Sh
-                                command: echo "hello"
                               reports:
                                 type: JUnit
                                 spec:
