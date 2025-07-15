@@ -1,0 +1,39 @@
+pipeline:
+  name: test-gcp-native-k8s
+  identifier: testgcpnativek8s
+  projectIdentifier: revanthcstesting
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: helm deploy
+        identifier: helm_deploy
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: NativeHelm
+          service:
+            serviceRef: sampleapp
+          environment:
+            environmentRef: rrgcpenv
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: k8senvnativegcp
+          execution:
+            steps:
+              - step:
+                  type: HelmDeploy
+                  name: HelmDeploy_1
+                  identifier: HelmDeploy_1
+                  spec:
+                    skipDryRun: false
+                    ignoreReleaseHistFailStatus: false
+                  timeout: 10m
+            rollbackSteps: []
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
