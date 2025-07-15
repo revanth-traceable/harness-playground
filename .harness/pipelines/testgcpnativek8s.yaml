@@ -39,7 +39,7 @@ pipeline:
                         type: KubernetesDirect
                         spec:
                           connectorRef: directgcpk8s
-                          namespace: harness_delegate_ng
+                          namespace: harness-delegate-ng
                           volumes:
                             - mountPath: /harness/config
                               type: ConfigMap
