@@ -29,6 +29,24 @@ pipeline:
                     skipDryRun: false
                     ignoreReleaseHistFailStatus: false
                   timeout: 10m
+              - stepGroup:
+                  name: test-group
+                  identifier: testgroup
+                  steps:
+                    - step:
+                        type: ShellScript
+                        name: ShellScript_1
+                        identifier: ShellScript_1
+                        spec:
+                          shell: Bash
+                          executionTarget: {}
+                          source:
+                            type: Inline
+                            spec:
+                              script: ls
+                          environmentVariables: []
+                          outputVariables: []
+                        timeout: 10m
             rollbackSteps: []
         tags: {}
         failureStrategies:
