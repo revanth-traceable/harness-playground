@@ -90,6 +90,11 @@ pipeline:
                                       drop: []
                                       add: []
                                   nodeSelector: {}
+                                  volumes:
+                                    - mountPath: /harness/config
+                                      type: ConfigMap
+                                      spec:
+                                        name: myconfig
                               reports:
                                 type: JUnit
                                 spec:
