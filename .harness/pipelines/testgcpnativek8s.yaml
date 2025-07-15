@@ -27,13 +27,14 @@ pipeline:
                       identifier: testgroup
                       steps:
                         - step:
-                            type: HelmDeploy
-                            name: HelmDeploy_1
-                            identifier: HelmDeploy_1
+                            type: Run
+                            name: Run_1
+                            identifier: Run_1
                             spec:
-                              skipDryRun: false
-                              ignoreReleaseHistFailStatus: false
-                            timeout: 10m
+                              connectorRef: public
+                              image: alpine:latest
+                              shell: Sh
+                              command: ls
                       stepGroupInfra:
                         type: KubernetesDirect
                         spec:
