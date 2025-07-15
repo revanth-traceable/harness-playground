@@ -74,18 +74,22 @@ pipeline:
             spec:
               execution:
                 steps:
-                  - step:
-                      type: ShellScript
-                      name: ShellScript_1
-                      identifier: ShellScript_1
-                      spec:
-                        shell: Bash
-                        executionTarget: {}
-                        source:
-                          type: Inline
-                          spec:
-                            script: ls
-                        environmentVariables: []
-                        outputVariables: []
-                      timeout: 10m
+                  - stepGroup:
+                      name: test custom
+                      identifier: test_custom
+                      steps:
+                        - step:
+                            type: ShellScript
+                            name: ShellScript_1
+                            identifier: ShellScript_1
+                            spec:
+                              shell: Bash
+                              executionTarget: {}
+                              source:
+                                type: Inline
+                                spec:
+                                  script: ls
+                              environmentVariables: []
+                              outputVariables: []
+                            timeout: 10m
             tags: {}
