@@ -47,6 +47,16 @@ pipeline:
                           environmentVariables: []
                           outputVariables: []
                         timeout: 10m
+                  stepGroupInfra:
+                    type: KubernetesDirect
+                    spec:
+                      connectorRef: directgcpk8s
+                      namespace: harness_delegate_ng
+                      volumes:
+                        - mountPath: /harness/config
+                          type: ConfigMap
+                          spec:
+                            name: myconfig
             rollbackSteps: []
         tags: {}
         failureStrategies:
