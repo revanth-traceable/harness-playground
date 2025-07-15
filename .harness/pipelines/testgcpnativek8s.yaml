@@ -75,31 +75,39 @@ pipeline:
               execution:
                 steps:
                   - stepGroup:
-                      name: test custom
-                      identifier: test_custom
+                      name: custom
+                      identifier: custom
                       steps:
                         - step:
-                            type: ShellScript
-                            name: ShellScript_1
-                            identifier: ShellScript_1
+                            type: Container
+                            name: Container_1
+                            identifier: Container_1
                             spec:
-                              shell: Bash
-                              executionTarget: {}
-                              source:
-                                type: Inline
+                              connectorRef: public
+                              image: alpine:latest
+                              command: ls
+                              shell: Sh
+                              infrastructure:
+                                type: KubernetesDirect
                                 spec:
-                                  script: ls
-                              environmentVariables: []
+                                  connectorRef: directgcpk8s
+                                  namespace: harness-delegate-ng
+                                  resources:
+                                    limits:
+                                      cpu: "0.5"
+                                      memory: 500Mi
+                                  annotations: {}
+                                  labels: {}
+                                  containerSecurityContext:
+                                    capabilities:
+                                      drop: []
+                                      add: []
+                                  nodeSelector: {}
+                              reports:
+                                type: JUnit
+                                spec:
+                                  paths: []
                               outputVariables: []
-                            timeout: 10m
-                      stepGroupInfra:
-                        type: KubernetesDirect
-                        spec:
-                          connectorRef: directgcpk8s
-                          namespace: harness_delegate_ng
-                          volumes:
-                            - mountPath: /harness/config
-                              type: ConfigMap
-                              spec:
-                                name: myconfig
+                              envVariables: {}
+                            timeout: 3m 20s
             tags: {}
