@@ -1,0 +1,6 @@
+environment:
+  name: rr-gcp-env
+  identifier: rrgcpenv
+  orgIdentifier: default
+  projectIdentifier: revanthcstesting
+  type: PreProduction
