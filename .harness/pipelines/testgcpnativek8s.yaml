@@ -22,31 +22,17 @@ pipeline:
                   - identifier: k8senvnativegcp
               execution:
                 steps:
-                  - step:
-                      type: HelmDeploy
-                      name: HelmDeploy_1
-                      identifier: HelmDeploy_1
-                      spec:
-                        skipDryRun: false
-                        ignoreReleaseHistFailStatus: false
-                      timeout: 10m
                   - stepGroup:
                       name: test-group
                       identifier: testgroup
                       steps:
                         - step:
-                            type: ShellScript
-                            name: ShellScript_1
-                            identifier: ShellScript_1
+                            type: HelmDeploy
+                            name: HelmDeploy_1
+                            identifier: HelmDeploy_1
                             spec:
-                              shell: Bash
-                              executionTarget: {}
-                              source:
-                                type: Inline
-                                spec:
-                                  script: ls
-                              environmentVariables: []
-                              outputVariables: []
+                              skipDryRun: false
+                              ignoreReleaseHistFailStatus: false
                             timeout: 10m
                       stepGroupInfra:
                         type: KubernetesDirect
