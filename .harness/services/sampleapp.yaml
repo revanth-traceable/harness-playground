@@ -3,3 +3,22 @@ service:
   identifier: sampleapp
   orgIdentifier: default
   projectIdentifier: revanthcstesting
+  serviceDefinition:
+    spec:
+      manifests:
+        - manifest:
+            identifier: helmwordpress
+            type: HelmChart
+            spec:
+              store:
+                type: Http
+                spec:
+                  connectorRef: helmexample
+              chartName: wordpress
+              chartVersion: ""
+              subChartPath: ""
+              helmVersion: V3
+              skipResourceVersioning: false
+              enableDeclarativeRollback: false
+              fetchHelmChartMetadata: false
+    type: NativeHelm
