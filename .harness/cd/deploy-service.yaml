@@ -102,6 +102,26 @@ pipeline:
                           type: cosign
                           spec:
                             public_key: artifact-pub
+                  - step:
+                      type: AquaTrivy
+                      name: AquaTrivy_1
+                      identifier: AquaTrivy_1
+                      spec:
+                        mode: orchestration
+                        config: default
+                        target:
+                          type: container
+                          detection: auto
+                        advanced:
+                          log:
+                            level: info
+                        privileged: true
+                        image:
+                          type: docker_v2
+                          tag: <+pipeline.stages.deploy.spec.artifacts.primary.tag>
+                          name: <+pipeline.stages.deploy.spec.artifacts.primary.imagePath>
+                        sbom:
+                          format: spdx-json
   properties:
     ci:
       codebase:
