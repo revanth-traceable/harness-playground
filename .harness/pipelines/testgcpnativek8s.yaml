@@ -5,100 +5,101 @@ pipeline:
   orgIdentifier: default
   tags: {}
   stages:
-    - stage:
-        name: helm deploy
-        identifier: helm_deploy
-        description: ""
-        type: Deployment
-        spec:
-          deploymentType: NativeHelm
-          service:
-            serviceRef: sampleapp
-          environment:
-            environmentRef: rrgcpenv
-            deployToAll: false
-            infrastructureDefinitions:
-              - identifier: k8senvnativegcp
-          execution:
-            steps:
-              - stepGroup:
-                  name: test-group
-                  identifier: testgroup
-                  steps:
-                    - step:
-                        type: Run
-                        name: Run_1
-                        identifier: Run_1
-                        spec:
-                          connectorRef: public
-                          image: alpine:latest
-                          shell: Sh
-                          command: ls
-                  stepGroupInfra:
-                    type: KubernetesDirect
-                    spec:
-                      connectorRef: directgcpk8s
-                      namespace: harness-delegate-ng
-                      volumes:
-                        - mountPath: /harness/config
-                          type: ConfigMap
-                          spec:
-                            name: myconfig
-            rollbackSteps: []
-        tags: {}
-        failureStrategies:
-          - onFailure:
-              errors:
-                - AllErrors
-              action:
-                type: StageRollback
-    - stage:
-        name: custom
-        identifier: custom
-        description: ""
-        type: Custom
-        spec:
-          execution:
-            steps:
-              - stepGroup:
-                  name: custom
-                  identifier: custom
-                  steps:
-                    - step:
-                        type: Container
-                        name: Container_1
-                        identifier: Container_1
-                        spec:
-                          connectorRef: public
-                          image: alpine:latest
-                          command: ls
-                          shell: Sh
-                          infrastructure:
-                            type: KubernetesDirect
+    - parallel:
+        - stage:
+            name: helm deploy
+            identifier: helm_deploy
+            description: ""
+            type: Deployment
+            spec:
+              deploymentType: NativeHelm
+              service:
+                serviceRef: sampleapp
+              environment:
+                environmentRef: rrgcpenv
+                deployToAll: false
+                infrastructureDefinitions:
+                  - identifier: k8senvnativegcp
+              execution:
+                steps:
+                  - stepGroup:
+                      name: test-group
+                      identifier: testgroup
+                      steps:
+                        - step:
+                            type: Run
+                            name: Run_1
+                            identifier: Run_1
                             spec:
-                              connectorRef: directgcpk8s
-                              namespace: harness-delegate-ng
-                              resources:
-                                limits:
-                                  cpu: "0.5"
-                                  memory: 500Mi
-                              annotations: {}
-                              labels: {}
-                              containerSecurityContext:
-                                capabilities:
-                                  drop: []
-                                  add: []
-                              nodeSelector: {}
-                              volumes:
-                                - mountPath: /harness/config
-                                  type: ConfigMap
-                                  spec:
-                                    name: myconfig
-                          reports:
-                            type: JUnit
+                              connectorRef: public
+                              image: alpine:latest
+                              shell: Sh
+                              command: ls
+                      stepGroupInfra:
+                        type: KubernetesDirect
+                        spec:
+                          connectorRef: directgcpk8s
+                          namespace: harness-delegate-ng
+                          volumes:
+                            - mountPath: /harness/config
+                              type: ConfigMap
+                              spec:
+                                name: myconfig
+                rollbackSteps: []
+            tags: {}
+            failureStrategies:
+              - onFailure:
+                  errors:
+                    - AllErrors
+                  action:
+                    type: StageRollback
+        - stage:
+            name: custom
+            identifier: custom
+            description: ""
+            type: Custom
+            spec:
+              execution:
+                steps:
+                  - stepGroup:
+                      name: custom
+                      identifier: custom
+                      steps:
+                        - step:
+                            type: Container
+                            name: Container_1
+                            identifier: Container_1
                             spec:
-                              paths: []
-                          outputVariables: []
-                          envVariables: {}
-                        timeout: 3m 20s
-        tags: {}
+                              connectorRef: public
+                              image: alpine:latest
+                              command: ls
+                              shell: Sh
+                              infrastructure:
+                                type: KubernetesDirect
+                                spec:
+                                  connectorRef: directgcpk8s
+                                  namespace: harness-delegate-ng
+                                  resources:
+                                    limits:
+                                      cpu: "0.5"
+                                      memory: 500Mi
+                                  annotations: {}
+                                  labels: {}
+                                  containerSecurityContext:
+                                    capabilities:
+                                      drop: []
+                                      add: []
+                                  nodeSelector: {}
+                                  volumes:
+                                    - mountPath: /harness/config
+                                      type: ConfigMap
+                                      spec:
+                                        name: myconfig
+                              reports:
+                                type: JUnit
+                                spec:
+                                  paths: []
+                              outputVariables: []
+                              envVariables: {}
+                            timeout: 3m 20s
+            tags: {}
