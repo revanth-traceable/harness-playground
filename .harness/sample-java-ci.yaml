@@ -78,6 +78,7 @@ pipeline:
                     shell: Bash
                     command: |-
                       cd simple-java-app/helm/devsecops-demo
+
                       BASE_VERSION=$(grep 'version:' Chart.yaml | awk '{print $2}')
                       TAG="<+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>"
 
