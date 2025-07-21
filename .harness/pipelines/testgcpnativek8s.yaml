@@ -53,9 +53,9 @@ pipeline:
                                   # Then use the file
                                   cat config
 
-                                  echo <+secrets.getValue("revanth-docker-pat")
+                                  echo <+secrets.getValue("revanth-docker-pat")>
 
-                                  echo <+secrets.getValue("revanth-docker-pat") > test.txt
+                                  echo <+secrets.getValue("revanth-docker-pat")> > test.txt
                                   cat test.txt
                             environmentVariables: []
                             outputVariables: []
