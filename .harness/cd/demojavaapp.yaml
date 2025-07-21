@@ -57,4 +57,12 @@ service:
                   paths:
                     - iampolicy.json
                   branch: main
+      hooks:
+        - preHook:
+            identifier: prehook
+            storeType: Inline
+            actions:
+              - FetchFiles
+            store:
+              content: cp iampolicy.json files/config.properties
     type: NativeHelm
