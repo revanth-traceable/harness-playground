@@ -62,7 +62,7 @@ service:
             identifier: prehook
             storeType: Inline
             actions:
-              - FetchFiles
+              - TemplateManifest
             store:
               content: |-
                 chart_name="<+manifests.devsecopsdemo.helm.name>"
