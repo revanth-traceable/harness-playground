@@ -52,7 +52,7 @@ service:
               store:
                 type: Github
                 spec:
-                  connectorRef: rrawsterraformvpc
+                  connectorRef: rriacmrepo
                   gitFetchType: Branch
                   paths:
                     - iampolicy.json
