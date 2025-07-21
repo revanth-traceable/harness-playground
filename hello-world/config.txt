@@ -1,1 +1,3 @@
 this is my config file
+
+<+secrets.getValue("artifact-pub")>
