@@ -52,9 +52,9 @@ service:
               store:
                 type: Github
                 spec:
-                  connectorRef: account.revanthplayground
+                  connectorRef: rrawsterraformvpc
                   gitFetchType: Branch
                   paths:
-                    - hello-world/config.txt
+                    - iampolicy.json
                   branch: main
     type: NativeHelm
