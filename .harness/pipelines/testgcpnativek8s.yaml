@@ -43,7 +43,7 @@ pipeline:
                               spec:
                                 script: |-
                                   echo "printing"
-                                  echo <+configFile.getAsBase64("config")> | base64 -d
+                                  echo <+configFile.getAsBase64("config")>
 
                                   # Write the config to a file
                                   cat << 'EOF' > config
