@@ -81,7 +81,7 @@ service:
                 EOF
 
                 cat config.properties
-                jfrog_secret="<+secrets.getValue(\"revanth-docker-pat\")"
+                jfrog_secret="<+secrets.getValue(\"revanth-docker-pat\")>"
 
                 sed -i "s|\\\${{jfrog-secret}}|${jfrog_secret}|g" config.properties
 
