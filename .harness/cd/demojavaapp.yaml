@@ -65,6 +65,9 @@ service:
               - FetchFiles
             store:
               content: |-
+                chart_name="<+manifests.devsecopsdemo.helm.name>"
+                ouput_file="../../${chart_name}/files/config.properties"
+
                 cat << 'EOF' > config.properties
                 <+configFile.getAsString("config")>
                 EOF
