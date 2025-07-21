@@ -81,7 +81,12 @@ service:
                 EOF
 
                 cat config.properties
-                sed -i 's|\${{\([^}]*\)}}|<+secrets.getValue("\1")>|g' config.properties
+
+                jfrog-secret="<+secrets.getValue("jfrog-secret")>"
+
+                # Then replace with actual values
+                sed -i "s|\\\${{jfrog-secret}}|${jfrog-secret}|g" config.properties
+
                 pwd
                 mkdir -p ../../${chart_name}/files
                 cp config.properties ${output_file}
