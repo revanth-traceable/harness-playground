@@ -80,12 +80,11 @@ service:
                 <+configFile.getAsString("jfrogconfig")>
                 EOF
 
-                cat config.properties
-
                 jfrog-secret="<+secrets.getValue("revanth-docker-pat")>"
 
                 # Then replace with actual values
                 sed -i "s|\\\${{jfrog-secret}}|${jfrog-secret}|g" config.properties
+                cat config.properties
 
                 pwd
                 mkdir -p ../../${chart_name}/files
