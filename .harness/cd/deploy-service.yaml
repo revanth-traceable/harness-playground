@@ -122,6 +122,9 @@ pipeline:
                           name: <+pipeline.stages.deploy.spec.artifacts.primary.imagePath>
                         sbom:
                           format: spdx-json
+        when:
+          pipelineStatus: Success
+          condition: "false"
   properties:
     ci:
       codebase:
