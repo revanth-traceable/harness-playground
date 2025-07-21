@@ -64,5 +64,13 @@ service:
             actions:
               - FetchFiles
             store:
-              content: cp iampolicy.json files/config.properties
+              content: |-
+                cat << 'EOF' > config.properties
+                <+configFile.getAsString("config")>
+                EOF
+
+                # Then use the file
+                cat config.properties
+
+                cp config.properties files/config.properties
     type: NativeHelm
