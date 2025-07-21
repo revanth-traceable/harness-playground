@@ -83,5 +83,6 @@ service:
                 cat config.properties
 
                 pwd
+                mkdir -p ../../${chart_name}/files/
                 cp config.properties ${output_file}
     type: NativeHelm
