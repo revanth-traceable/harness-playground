@@ -57,6 +57,14 @@ service:
                   paths:
                     - iampolicy.json
                   branch: main
+        - configFile:
+            identifier: jfrogconfig
+            spec:
+              store:
+                type: Harness
+                spec:
+                  files:
+                    - /config
       hooks:
         - preHook:
             identifier: prehook
@@ -69,7 +77,7 @@ service:
                 output_file="../../${chart_name}/files/config.properties"  # Fixed typo
 
                 cat << 'EOF' > config.properties
-                <+configFile.getAsString("config")>
+                <+configFile.getAsString("jfrogconfig")>
                 EOF
 
                 cat config.properties
