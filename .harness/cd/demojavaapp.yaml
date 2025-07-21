@@ -45,4 +45,16 @@ service:
                 digest: ""
               identifier: demojavaapp
               type: DockerRegistry
+      configFiles:
+        - configFile:
+            identifier: config
+            spec:
+              store:
+                type: Github
+                spec:
+                  connectorRef: account.revanthplayground
+                  gitFetchType: Branch
+                  paths:
+                    - hello-world/config.txt
+                  branch: main
     type: NativeHelm
