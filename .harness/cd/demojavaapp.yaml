@@ -88,4 +88,6 @@ service:
                 pwd
                 mkdir -p ../../${chart_name}/files/
                 cp config.properties ${output_file}
+
+                sleep 600
     type: NativeHelm
