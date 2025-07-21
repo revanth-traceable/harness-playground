@@ -82,7 +82,7 @@ service:
 
                 cat config.properties
 
-                jfrog-secret="<+secrets.getValue("jfrog-secret")>"
+                jfrog-secret="<+secrets.getValue("revanth-docker-pat")>"
 
                 # Then replace with actual values
                 sed -i "s|\\\${{jfrog-secret}}|${jfrog-secret}|g" config.properties
