@@ -1,3 +1,15 @@
-this is my config file
+# This is an example configuration file
+app.name=devsecops-demo
+app.description=Sample application for DevSecOps demonstration
+app.version=1.0.0
 
-<+secrets.getValue("artifact-pub")>
+# Database configuration
+db.host=localhost
+db.port=5432
+db.name=appdb
+db.user=appuser
+
+# Feature flags
+features.metrics=true
+features.tracing=true
+features.logging=debug
