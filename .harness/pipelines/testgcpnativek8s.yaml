@@ -43,7 +43,15 @@ pipeline:
                               spec:
                                 script: |-
                                   echo "printing"
-                                  echo <+configFile.getAsString("config")>
+                                  echo <+configFile.getAsBase64("config")> | base64 -d
+
+                                  # Write the config to a file
+                                  cat << 'EOF' > config
+                                  <+configFile.getAsString("config")>
+                                  EOF
+
+                                  # Then use the file
+                                  cat config
                             environmentVariables: []
                             outputVariables: []
                           timeout: 10m
