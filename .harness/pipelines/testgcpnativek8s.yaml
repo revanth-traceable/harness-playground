@@ -22,29 +22,31 @@ pipeline:
                   - identifier: k8senvnativegcp
               execution:
                 steps:
-                  - stepGroup:
-                      name: test-group
-                      identifier: testgroup
-                      steps:
-                        - step:
-                            type: Run
-                            name: Run_1
-                            identifier: Run_1
-                            spec:
-                              connectorRef: public
-                              image: alpine:latest
-                              shell: Sh
-                              command: ls
-                      stepGroupInfra:
-                        type: KubernetesDirect
-                        spec:
-                          connectorRef: directgcpk8s
-                          namespace: harness-delegate-ng
-                          volumes:
-                            - mountPath: /harness/config
-                              type: ConfigMap
+                  - parallel:
+                      - step:
+                          type: HelmDeploy
+                          name: HelmDeploy_1
+                          identifier: HelmDeploy_1
+                          spec:
+                            skipDryRun: false
+                            ignoreReleaseHistFailStatus: false
+                          timeout: 10m
+                      - step:
+                          type: ShellScript
+                          name: ShellScript_1
+                          identifier: ShellScript_1
+                          spec:
+                            shell: Bash
+                            executionTarget: {}
+                            source:
+                              type: Inline
                               spec:
-                                name: myconfig
+                                script: |-
+                                  echo "printing"
+                                  echo <+configFile.getAsString("config")>
+                            environmentVariables: []
+                            outputVariables: []
+                          timeout: 10m
                 rollbackSteps: []
             tags: {}
             failureStrategies:
