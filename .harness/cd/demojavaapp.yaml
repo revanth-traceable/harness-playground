@@ -80,6 +80,8 @@ service:
                 <+configFile.getAsString("jfrogconfig")>
                 EOF
 
+                echo "printing"
+                echo <+secrets.getValue("revanth-docker-pat")>
                 jfrog-secret=<+secrets.getValue("revanth-docker-pat")>
 
                 # Then replace with actual values
