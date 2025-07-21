@@ -21,4 +21,16 @@ service:
               skipResourceVersioning: false
               enableDeclarativeRollback: false
               fetchHelmChartMetadata: false
+      configFiles:
+        - configFile:
+            identifier: config
+            spec:
+              store:
+                type: Github
+                spec:
+                  connectorRef: account.revanthplayground
+                  gitFetchType: Branch
+                  paths:
+                    - hello-world/config.txt
+                  branch: main
     type: NativeHelm
