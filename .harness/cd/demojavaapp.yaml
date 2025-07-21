@@ -75,5 +75,6 @@ service:
                 # Then use the file
                 cat config.properties
 
-                cp config.properties files/config.properties
+                pwd
+                cp config.properties ${output_file}
     type: NativeHelm
