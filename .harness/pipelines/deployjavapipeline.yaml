@@ -67,7 +67,7 @@ pipeline:
                           echo '<+configFile.getAsString("filestoreconfig:/test/config1.txt")>'
 
                           echo "config4"
-                          echo '<+configFile.getAsString("filestoreconfig:.harness/pipelines/iamprautomation.yaml")>'
+                          echo '<+configFile.getAsString("config:.harness/pipelines/iamprautomation.yaml")>'
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
