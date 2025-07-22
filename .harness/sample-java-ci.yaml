@@ -24,32 +24,32 @@ pipeline:
             enabled: true
           execution:
             steps:
-              - parallel:
-                  - step:
-                      type: Run
-                      name: build
-                      identifier: Run_1
-                      spec:
-                        connectorRef: public
-                        image: maven:3.9-eclipse-temurin-11
-                        shell: Sh
-                        command: |-
-                          cd simple-java-app/
-                          mvn clean package -DskipTests
-                        resources:
-                          limits:
-                            memory: 100Mi
-                            cpu: "0.2"
-                  - step:
-                      type: RestoreCacheS3
-                      name: RestoreCacheS3_1
-                      identifier: RestoreCacheS3_1
-                      spec:
-                        connectorRef: cicacherevanth
-                        region: ap-south-1
-                        bucket: rr-trace-s3
-                        key: cache-{{ checksum "simple-java-app/pom.xml" }}
-                        archiveFormat: Tar
+              - step:
+                  type: RestoreCacheS3
+                  name: RestoreCacheS3_1
+                  identifier: RestoreCacheS3_1
+                  spec:
+                    connectorRef: cicacherevanth
+                    region: ap-south-1
+                    bucket: rr-trace-s3
+                    key: cache-{{ checksum "simple-java-app/pom.xml" }}
+                    archiveFormat: Tar
+                contextType: Pipeline
+              - step:
+                  type: Run
+                  name: build
+                  identifier: Run_1
+                  spec:
+                    connectorRef: public
+                    image: maven:3.9-eclipse-temurin-11
+                    shell: Sh
+                    command: |-
+                      cd simple-java-app/
+                      mvn clean package -DskipTests
+                    resources:
+                      limits:
+                        memory: 100Mi
+                        cpu: "0.2"
               - parallel:
                   - step:
                       type: BuildAndPushDockerRegistry
