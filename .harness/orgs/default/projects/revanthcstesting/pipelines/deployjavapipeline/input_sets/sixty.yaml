@@ -1,0 +1,37 @@
+inputSet:
+  pipeline:
+    identifier: deployjavapipeline
+    stages:
+      - stage:
+          identifier: deploy
+          type: Deployment
+          spec:
+            service:
+              serviceInputs:
+                serviceDefinition:
+                  type: NativeHelm
+                  spec:
+                    manifests:
+                      - manifest:
+                          identifier: devsecopsdemo
+                          type: HelmChart
+                          spec:
+                            chartVersion: 1.2.0-dev-60
+                    artifacts:
+                      primary:
+                        sources:
+                          - identifier: demojavaapp
+                            type: DockerRegistry
+                            spec:
+                              tag: dev-60
+    properties:
+      ci:
+        codebase:
+          build:
+            spec:
+              branch: main
+            type: branch
+  name: sixty
+  identifier: sixty
+  orgIdentifier: default
+  projectIdentifier: revanthcstesting
