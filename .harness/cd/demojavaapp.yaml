@@ -65,6 +65,14 @@ service:
                 spec:
                   files:
                     - /config
+        - configFile:
+            identifier: filestoreconfig
+            spec:
+              store:
+                type: Harness
+                spec:
+                  files:
+                    - /test
       hooks:
         - preHook:
             identifier: prehook
