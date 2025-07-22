@@ -33,8 +33,9 @@ pipeline:
                     connectorRef: cicacherevanth
                     region: ap-south-1
                     bucket: rr-trace-s3
-                    key: cache-{{ checksum "simple-java-app/pom.xml" }}
+                    key: cache-default
                     archiveFormat: Tar
+                    pathStyle: false
                 contextType: Pipeline
               - step:
                   type: Run
@@ -63,6 +64,7 @@ pipeline:
                     sourcePaths:
                       - /root/.m2
                     archiveFormat: Tar
+                    override: false
                 contextType: Pipeline
               - parallel:
                   - step:
