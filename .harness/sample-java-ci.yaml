@@ -80,6 +80,18 @@ pipeline:
                         stageStatus: Success
                         condition: "false"
               - step:
+                  type: SaveCacheS3
+                  name: SaveCacheS3_1
+                  identifier: SaveCacheS3_1
+                  spec:
+                    connectorRef: cicacherevanth
+                    region: ap-south-1
+                    bucket: rr-trace-s3
+                    key: cache-{{ checksum "pom.xml" }}
+                    sourcePaths:
+                      - /root/.m2
+                    archiveFormat: Tar
+              - step:
                   type: Run
                   name: helm-package
                   identifier: helmpackage
