@@ -55,7 +55,7 @@ service:
                   connectorRef: rriacmrepo
                   gitFetchType: Branch
                   paths:
-                    - iampolicy.json
+                    - .harness/pipelines/
                   branch: main
         - configFile:
             identifier: jfrogconfig
