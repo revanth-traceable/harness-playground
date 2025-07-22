@@ -294,3 +294,6 @@ pipeline:
               ci:
                 codebase:
                   build: <+input>
+        when:
+          pipelineStatus: Success
+          condition: "false"
