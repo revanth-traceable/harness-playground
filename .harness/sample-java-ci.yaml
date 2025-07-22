@@ -275,6 +275,8 @@ pipeline:
           runtime:
             type: Cloud
             spec: {}
+          sharedPaths:
+            - /root/.m2
     - stage:
         name: cd
         identifier: cd
