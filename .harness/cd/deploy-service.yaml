@@ -31,13 +31,21 @@ pipeline:
                   spec:
                     key: <+env.name>-<+infra.namespace>
                     scope: Pipeline
-              - step:
-                  name: Helm Deployment
-                  identifier: helmDeployment
-                  type: HelmDeploy
-                  timeout: 10m
-                  spec:
-                    skipDryRun: false
+              - parallel:
+                  - step:
+                      name: Helm Deployment
+                      identifier: helmDeployment
+                      type: HelmDeploy
+                      timeout: 10m
+                      spec:
+                        skipDryRun: false
+                  - step:
+                      type: K8sDryRun
+                      name: K8sDryRun_1
+                      identifier: K8sDryRun_1
+                      spec:
+                        encryptYamlOutput: false
+                      timeout: 10m
             rollbackSteps:
               - step:
                   name: Helm Rollback
