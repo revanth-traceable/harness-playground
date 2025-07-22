@@ -57,17 +57,17 @@ pipeline:
                       spec:
                         script: |-
                           echo "config1"
-                          <+configFile.getAsString("jfrogconfig")>
+                          echo '<+configFile.getAsString("jfrogconfig")>'
 
                           echo "config2"
-                          <+configFile.getAsString("config:.harness/pipelines/iamapply.yaml")>
+                          echo '<+configFile.getAsString("config:.harness/pipelines/iamapply.yaml")>'
 
 
                           echo "config3"
-                          <+configFile.getAsString("filestoreconfig:/test/config1.txt")>
+                          echo '<+configFile.getAsString("filestoreconfig:/test/config1.txt")>'
 
                           echo "config4"
-                          <+configFile.getAsString("filestoreconfig:/test")>
+                          echo '<+configFile.getAsString("filestoreconfig:/test")>'
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
