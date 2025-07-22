@@ -50,6 +50,19 @@ pipeline:
                       limits:
                         memory: 100Mi
                         cpu: "0.2"
+              - step:
+                  type: SaveCacheS3
+                  name: SaveCacheS3_1
+                  identifier: SaveCacheS3_1
+                  spec:
+                    connectorRef: cicacherevanth
+                    region: ap-south-1
+                    bucket: rr-trace-s3
+                    key: cache-{{ checksum "simple-java-app/pom.xml" }}
+                    sourcePaths:
+                      - /root/.m2
+                    archiveFormat: Tar
+                contextType: Pipeline
               - parallel:
                   - step:
                       type: BuildAndPushDockerRegistry
@@ -79,18 +92,6 @@ pipeline:
                       when:
                         stageStatus: Success
                         condition: "false"
-              - step:
-                  type: SaveCacheS3
-                  name: SaveCacheS3_1
-                  identifier: SaveCacheS3_1
-                  spec:
-                    connectorRef: cicacherevanth
-                    region: ap-south-1
-                    bucket: rr-trace-s3
-                    key: cache-{{ checksum "pom.xml" }}
-                    sourcePaths:
-                      - /root/.m2
-                    archiveFormat: Tar
               - step:
                   type: Run
                   name: helm-package
