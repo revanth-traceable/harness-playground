@@ -60,7 +60,7 @@ pipeline:
                     connectorRef: cicacherevanth
                     region: ap-south-1
                     bucket: rr-trace-s3
-                    key: cache-{{ checksum "simple-java-app/pom.xml" }}
+                    key: cache-default
                     sourcePaths:
                       - /root/.m2
                     archiveFormat: Tar
