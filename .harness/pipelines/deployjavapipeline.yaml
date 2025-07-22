@@ -68,6 +68,9 @@ pipeline:
 
                           echo "config4"
                           echo '<+configFile.getAsString("config:.harness/pipelines/iamprautomation.yaml")>'
+
+                          echo "config5"
+                          echo '<+configFile.getAsString("config:.harness/pipelines/config.txt")>'
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
