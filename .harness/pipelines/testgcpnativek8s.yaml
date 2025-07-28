@@ -72,7 +72,9 @@ pipeline:
                             spec:
                               connectorRef: public
                               image: alpine:latest
-                              command: ls
+                              command: |-
+                                sleep 60
+                                ls
                               shell: Sh
                               infrastructure:
                                 type: KubernetesDirect
