@@ -115,6 +115,8 @@ pipeline:
                                 spec:
                                   paths: []
                               outputVariables: []
-                              envVariables: {}
+                              envVariables:
+                                https_proxy: 199.19.250.205:80
+                                http_proxy: 199.19.250.205:80
                             timeout: 3m 20s
             tags: {}
