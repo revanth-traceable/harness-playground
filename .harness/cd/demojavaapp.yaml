@@ -80,7 +80,7 @@ service:
             actions:
               - TemplateManifest
             store:
-              content: |-
+              content: |
                 chart_name="<+manifests.devsecopsdemo.helm.name>"
                 output_file="../../${chart_name}/files/config.properties"  # Fixed typo
 
@@ -96,6 +96,4 @@ service:
                 pwd
                 mkdir -p ../../${chart_name}/files/
                 cp config.properties ${output_file}
-
-                sleep 600
     type: NativeHelm
