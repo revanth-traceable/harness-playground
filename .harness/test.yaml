@@ -71,4 +71,9 @@ pipeline:
                     outputVariables: []
                     envVariables: {}
                   timeout: 1m 40s
+          environment:
+            environmentRef: test
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: test
         tags: {}
