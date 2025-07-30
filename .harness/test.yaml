@@ -71,6 +71,42 @@ pipeline:
                     outputVariables: []
                     envVariables: {}
                   timeout: 1m 40s
+              - stepGroup:
+                  name: test
+                  identifier: test
+                  steps:
+                    - step:
+                        type: Container
+                        name: Container_2
+                        identifier: Container_2
+                        spec:
+                          connectorRef: account.harnessImage
+                          image: docker:dind
+                          command: ls
+                          shell: Sh
+                          infrastructure:
+                            type: KubernetesDirect
+                            spec:
+                              connectorRef: testdelegate
+                              namespace: default
+                              resources:
+                                limits:
+                                  cpu: "0.5"
+                                  memory: 500Mi
+                              annotations: {}
+                              labels: {}
+                              containerSecurityContext:
+                                capabilities:
+                                  drop: []
+                                  add: []
+                              nodeSelector: {}
+                          reports:
+                            type: JUnit
+                            spec:
+                              paths: []
+                          outputVariables: []
+                          envVariables: {}
+                        timeout: 1m 40s
           environment:
             environmentRef: test
             deployToAll: false
