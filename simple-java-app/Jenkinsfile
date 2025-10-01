@@ -44,11 +44,14 @@ pipeline {
                             
                             env.IMAGE_TAG = imageTag
                             
-                            docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
-                                def customImage = docker.build("${DOCKER_REGISTRY}/${DOCKER_REPO}:${imageTag}", 
-                                    "-f simple-java-app/Dockerfile .")
-                                customImage.push()
-                            }
+                            sh """
+                                echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
+                                docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO}:${imageTag} -f simple-java-app/Dockerfile .
+                                docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${imageTag}
+                                docker logout
+                            """
+
+
                         }
                     }
                 }
