@@ -1,0 +1,176 @@
+pipeline:
+  name: demo-pipelines.mvn-java-app-ci-revanth
+  identifier: mvn_java_app_ci_revanth_83yrCiF9
+  projectIdentifier: demo
+  orgIdentifier: jenkinsdemo
+  variables:
+    - name: docker_registry
+      type: String
+      value: revanthharness
+    - name: docker_repo
+      type: String
+      value: demo-java-app
+    - name: docker_credentials_id
+      type: String
+      value: jenkinsdemodocker
+    - name: github_pat
+      type: Secret
+      value: <+input>
+    - name: helm_token
+      type: Secret
+      value: <+input>
+    - name: helm_registry
+      type: String
+      value: pkg.harness.io/sl32ke39qekmavwtgmagow/har-helm-repo
+    - name: helm_user
+      type: String
+      value: sai.veera@harness.io
+  stages:
+    - stage:
+        identifier: build_with_maven
+        name: Build with Maven
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  identifier: maven_build
+                  name: Maven Build
+                  type: Run
+                  timeout: 10m
+                  spec:
+                    connectorRef: account.harnessImage
+                    image: maven:3.9-eclipse-temurin-11
+                    shell: Bash
+                    command: |-
+                      cd simple-java-app/
+                      mvn clean package
+            rollbackSteps: []
+          caching:
+            enabled: false
+            paths: []
+          buildIntelligence:
+            enabled: false
+        description: ""
+    - parallel:
+        - stage:
+            identifier: build_and_push_docker
+            name: Build and Push Docker Image
+            type: CI
+            spec:
+              cloneCodebase: false
+              platform:
+                os: Linux
+                arch: Amd64
+              runtime:
+                type: Cloud
+                spec: {}
+              execution:
+                steps:
+                  - step:
+                      identifier: build_and_push_docker_image
+                      name: Build and Push Docker Image
+                      type: BuildAndPushDockerRegistry
+                      timeout: 10m
+                      spec:
+                        connectorRef: <+pipeline.variables.docker_credentials_id>
+                        repo: <+pipeline.variables.docker_repo>
+                        tags:
+                          - latest
+                          - <+pipeline.sequenceId>
+                        dockerfile: Dockerfile
+                        context: .
+                rollbackSteps: []
+            description: ""
+        - stage:
+            identifier: security_scans
+            name: Security Scans
+            type: CI
+            spec:
+              cloneCodebase: false
+              runtime:
+                type: Cloud
+                spec:
+                  size: small
+              platform:
+                os: Linux
+                arch: Amd64
+              execution:
+                steps:
+                  - step:
+                      identifier: semgrep_security_scan
+                      name: Semgrep Security Scan
+                      type: Semgrep
+                      timeout: 10m
+                      spec:
+                        config: default
+                        mode: orchestration
+                        target:
+                          type: repository
+                          workspace: .
+                        imageTag: latest
+                        advanced:
+                          args:
+                            cli: semgrep scan --json
+                rollbackSteps: []
+    - stage:
+        identifier: helm_package_and_push
+        name: Helm Package and Push
+        type: CI
+        spec:
+          cloneCodebase: false
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Docker
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  identifier: helm_package_push
+                  name: Helm Package and Push
+                  type: Run
+                  timeout: 10m
+                  spec:
+                    connectorRef: account.harnessImage
+                    image: alpine/helm:3.11.1
+                    shell: Bash
+                    command: |
+                      cd simple-java-app/helm/devsecops-demo
+
+                      # Login to Helm registry
+                      echo "Logging in to Helm registry"
+                      echo $HELM_TOKEN | helm registry login $HELM_REGISTRY -u $HELM_USER --password-stdin
+
+                      # Package the Helm chart
+                      echo "Packaging Helm chart"
+                      helm package .
+
+                      # Push the Helm chart to registry
+                      echo "Pushing Helm chart to registry"
+                      helm push *.tgz oci://$HELM_REGISTRY/
+                    envVariables:
+                      HELM_REGISTRY: <+pipeline.variables.helm_registry>
+                      HELM_USER: <+pipeline.variables.helm_user>
+                      HELM_TOKEN: <+pipeline.variables.helm_token>
+            rollbackSteps: []
+  description: This pipeline was generated by Harness AI on 2025-10-01 08:15:36 UTC by Anurag Bajpai.
+  tags:
+    ai_generated: "true"
+    jenkins_migrated: "true"
+    migrated_using: jenkins-plugin-AI-harness
+  properties:
+    ci:
+      codebase:
+        connectorRef: rrplayground
+        repoName: harness-playground
+        build: <+input>
+        sparseCheckout: []
