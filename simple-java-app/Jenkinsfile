@@ -60,18 +60,9 @@ pipeline {
                     when {
                         expression { return false }
                     }
-                    agent {
-                        docker {
-                            image 'plugins/github-release'
-                            reuseNode true
-                        }
-                    }
                     steps {
                         sh '''
-                            github-release \
-                                --base-url https://github.com/revanth-traceable \
-                                --api-key ${GITHUB_PAT} \
-                                --files simple-java-app/target/*
+                        echo "place holder for github release"
                         '''
                     }
                 }
@@ -115,22 +106,9 @@ pipeline {
         }
         
         stage('Custom Helm Push Plugin') {
-            agent {
-                docker {
-                    image 'revanthharness/drone-helm-push:latest'
-                    args "-v ${WORKSPACE}:/workspace"
-                    reuseNode true
-                }
-            }
             steps {
                 sh '''
-                    drone-helm-push \
-                        --chart-path simple-java-app/helm/devsecops-demo \
-                        --registry-url ${HELM_REGISTRY} \
-                        --username ${HELM_USER} \
-                        --password ${HELM_TOKEN} \
-                        --chart-version 1.2.11 \
-                        --app-version 1.2.11
+                echo "place holder for helm release"
                 '''
             }
         }
