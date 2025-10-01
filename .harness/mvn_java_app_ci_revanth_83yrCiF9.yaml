@@ -52,6 +52,35 @@ pipeline:
                     command: |-
                       cd simple-java-app/
                       mvn clean package
+              - parallel:
+                  - step:
+                      identifier: build_and_push_docker_image
+                      name: Build and Push Docker Image
+                      type: BuildAndPushDockerRegistry
+                      timeout: 10m
+                      spec:
+                        connectorRef: <+pipeline.variables.docker_credentials_id>
+                        repo: <+pipeline.variables.docker_repo>
+                        tags:
+                          - latest
+                          - <+pipeline.sequenceId>
+                        dockerfile: Dockerfile
+                        context: .
+                  - step:
+                      identifier: semgrep_security_scan
+                      name: Semgrep Security Scan
+                      type: Semgrep
+                      timeout: 10m
+                      spec:
+                        config: default
+                        mode: orchestration
+                        target:
+                          type: repository
+                          workspace: .
+                        imageTag: latest
+                        advanced:
+                          args:
+                            cli: semgrep scan --json
             rollbackSteps: []
           caching:
             enabled: false
