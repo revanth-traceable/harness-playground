@@ -78,12 +78,11 @@ pipeline:
                         config: default
                         target:
                           type: repository
+                          workspace: .
                           detection: auto
                         advanced:
                           log:
                             level: info
-                          args:
-                            cli: semgrep scan --json
                         imageTag: latest
                   - step:
                       type: Semgrep
