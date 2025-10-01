@@ -124,7 +124,7 @@ pipeline {
                     agent {
                         docker {
                             image 'anchore/grype:latest'
-                            args '--privileged --entrypoint='
+                            args '--privileged --entrypoint sh'
                             reuseNode true
                         }
                     }
@@ -142,7 +142,7 @@ pipeline {
                     agent {
                         docker {
                             image 'returntocorp/semgrep:latest'
-                            args '--entrypoint='
+                            args '-u root --entrypoint='
                             reuseNode true
                         }
                     }
