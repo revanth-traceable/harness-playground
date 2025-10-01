@@ -130,7 +130,7 @@ pipeline:
                       HELM_TOKEN: <+pipeline.variables.helm_token>
             rollbackSteps: []
           caching:
-            enabled: false
+            enabled: true
             paths: []
           buildIntelligence:
             enabled: false
