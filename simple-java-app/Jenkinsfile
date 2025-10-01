@@ -102,10 +102,10 @@ pipeline {
                         helm package .
                         helm push demo-java-app-${CHART_VERSION}.tgz oci://${HELM_REGISTRY}
                         
-                        echo ${CHART_VERSION} > ../../chart_version.txt
+                        echo ${CHART_VERSION} > chart_version.txt
                     '''
                     
-                    env.CHART_VERSION = readFile("${WORKSPACE}/chart_version.txt").trim()
+                    env.CHART_VERSION = readFile("${WORKSPACE}/simple-java-app/helm/devsecops-demo/chart_version.txt").trim()
                 }
             }
         }
