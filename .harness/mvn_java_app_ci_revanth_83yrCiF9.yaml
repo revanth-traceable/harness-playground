@@ -66,21 +66,30 @@ pipeline:
                           - <+pipeline.sequenceId>
                         dockerfile: Dockerfile
                         context: .
+                      when:
+                        stageStatus: Success
+                        condition: "false"
                   - step:
                       identifier: semgrep_security_scan
                       name: Semgrep Security Scan
                       type: Semgrep
                       timeout: 10m
                       spec:
-                        config: default
                         mode: orchestration
+                        config: default
                         target:
                           type: repository
                           workspace: .
-                        imageTag: latest
+                          detection: auto
                         advanced:
+                          log:
+                            level: info
                           args:
                             cli: semgrep scan --json
+                        imageTag: latest
+                      when:
+                        stageStatus: Success
+                        condition: "false"
             rollbackSteps: []
           caching:
             enabled: false
