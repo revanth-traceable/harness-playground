@@ -28,7 +28,7 @@ pipeline {
             }
         }
         
-        stage('Parallel - Build Docker & GitHub Release') {
+        stage('Parallel - Build Docker & Security Scan') {
             parallel {
                 stage('Build and Push Docker Image') {
                     steps {
@@ -60,14 +60,22 @@ pipeline {
                     }
                 }
                 
-                stage('GitHub Release') {
-                    when {
-                        expression { return false }
+           stage('Security Scans') {
+                    agent {
+                        docker {
+                            image 'returntocorp/semgrep:latest'
+                            args '-u root --entrypoint='
+                            reuseNode true
+                        }
                     }
                     steps {
                         sh '''
-                        echo "place holder for github release"
+                            semgrep --config=auto \
+                                --json \
+                                --output semgrep-results.json \
+                                . || true
                         '''
+                        archiveArtifacts artifacts: 'semgrep-results.json', allowEmptyArchive: true
                     }
                 }
             }
@@ -109,33 +117,6 @@ pipeline {
                 }
             }
         }
-        
-        stage('Custom Helm Push Plugin') {
-            steps {
-                sh '''
-                echo "place holder for helm release"
-                '''
-            }
-        }
-        
-        stage('Security Scans') {
-                    agent {
-                        docker {
-                            image 'returntocorp/semgrep:latest'
-                            args '-u root --entrypoint='
-                            reuseNode true
-                        }
-                    }
-                    steps {
-                        sh '''
-                            semgrep --config=auto \
-                                --json \
-                                --output semgrep-results.json \
-                                . || true
-                        '''
-                        archiveArtifacts artifacts: 'semgrep-results.json', allowEmptyArchive: true
-                    }
-                }
     }
     
     post {
