@@ -81,6 +81,33 @@ pipeline:
                         advanced:
                           args:
                             cli: semgrep scan --json
+              - step:
+                  identifier: helm_package_push
+                  name: Helm Package and Push
+                  type: Run
+                  timeout: 10m
+                  spec:
+                    connectorRef: account.harnessImage
+                    image: alpine/helm:3.11.1
+                    shell: Bash
+                    command: |
+                      cd simple-java-app/helm/devsecops-demo
+
+                      # Login to Helm registry
+                      echo "Logging in to Helm registry"
+                      echo $HELM_TOKEN | helm registry login $HELM_REGISTRY -u $HELM_USER --password-stdin
+
+                      # Package the Helm chart
+                      echo "Packaging Helm chart"
+                      helm package .
+
+                      # Push the Helm chart to registry
+                      echo "Pushing Helm chart to registry"
+                      helm push *.tgz oci://$HELM_REGISTRY/
+                    envVariables:
+                      HELM_REGISTRY: <+pipeline.variables.helm_registry>
+                      HELM_USER: <+pipeline.variables.helm_user>
+                      HELM_TOKEN: <+pipeline.variables.helm_token>
             rollbackSteps: []
           caching:
             enabled: false
