@@ -119,26 +119,6 @@ pipeline {
         }
         
         stage('Security Scans') {
-            parallel {
-                stage('Grype - Container Scan') {
-                    agent {
-                        docker {
-                            image 'anchore/grype:latest'
-                            args '--privileged --entrypoint sh'
-                            reuseNode true
-                        }
-                    }
-                    steps {
-                        sh '''
-                            grype ${DOCKER_REGISTRY}/${DOCKER_REPO}:${IMAGE_TAG} \
-                                -o json \
-                                --file grype-results.json || true
-                        '''
-                        archiveArtifacts artifacts: 'grype-results.json', allowEmptyArchive: true
-                    }
-                }
-                
-                stage('Semgrep - Code Scan') {
                     agent {
                         docker {
                             image 'returntocorp/semgrep:latest'
@@ -156,8 +136,6 @@ pipeline {
                         archiveArtifacts artifacts: 'semgrep-results.json', allowEmptyArchive: true
                     }
                 }
-            }
-        }
     }
     
     post {
