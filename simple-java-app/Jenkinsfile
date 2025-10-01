@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'revanthharness'
         DOCKER_REPO = 'demo-java-app'
-        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
         GITHUB_PAT = credentials('github-pat')
         HELM_TOKEN = credentials('har-helm-token')
         HELM_REGISTRY = 'pkg.harness.io/sl32ke39qekmavwtgmagow/har-helm-repo'
