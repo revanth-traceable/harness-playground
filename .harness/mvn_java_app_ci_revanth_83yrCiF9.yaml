@@ -60,7 +60,7 @@ pipeline:
                       timeout: 10m
                       spec:
                         connectorRef: <+pipeline.variables.docker_credentials_id>
-                        repo: <+pipeline.variables.docker_repo>
+                        repo: <+pipeline.variables.docker_repo>/<+pipeline.variables.docker_repo>
                         tags:
                           - latest
                           - <+pipeline.sequenceId>
