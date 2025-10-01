@@ -88,6 +88,19 @@ pipeline:
                         imageTag: latest
                       when:
                         stageStatus: Success
+                  - step:
+                      type: Semgrep
+                      name: Semgrep_2
+                      identifier: Semgrep_2
+                      spec:
+                        mode: orchestration
+                        config: default
+                        target:
+                          type: repository
+                          detection: auto
+                        advanced:
+                          log:
+                            level: info
               - step:
                   identifier: helm_package_push
                   name: Helm Package and Push
