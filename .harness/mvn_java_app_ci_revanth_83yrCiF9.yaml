@@ -78,7 +78,6 @@ pipeline:
                         config: default
                         target:
                           type: repository
-                          workspace: .
                           detection: auto
                         advanced:
                           log:
@@ -86,8 +85,6 @@ pipeline:
                           args:
                             cli: semgrep scan --json
                         imageTag: latest
-                      when:
-                        stageStatus: Success
                   - step:
                       type: Semgrep
                       name: Semgrep_2
