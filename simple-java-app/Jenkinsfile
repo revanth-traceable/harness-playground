@@ -1,0 +1,187 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_REGISTRY = 'revanthharness'
+        DOCKER_REPO = 'demo-java-app'
+        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
+        GITHUB_PAT = credentials('github-pat')
+        HELM_TOKEN = credentials('har-helm-token')
+        HELM_REGISTRY = 'pkg.harness.io/sl32ke39qekmavwtgmagow/har-helm-repo'
+        HELM_USER = 'sai.veera@harness.io'
+    }
+    
+    stages {
+        stage('Build with Maven') {
+            agent {
+                docker {
+                    image 'maven:3.9-eclipse-temurin-11'
+                    args '-u root -v maven-repo-cache:/root/.m2'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    cd simple-java-app/
+                    mvn clean package -DskipTests
+                '''
+            }
+        }
+        
+        stage('Parallel - Build Docker & GitHub Release') {
+            parallel {
+                stage('Build and Push Docker Image') {
+                    steps {
+                        script {
+                            def imageTag
+                            if (env.BRANCH_NAME) {
+                                imageTag = env.GIT_COMMIT.take(7)
+                            } else if (env.TAG_NAME) {
+                                imageTag = env.TAG_NAME
+                            } else {
+                                imageTag = "dev-${env.BUILD_NUMBER}"
+                            }
+                            
+                            env.IMAGE_TAG = imageTag
+                            
+                            docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                                def customImage = docker.build("${DOCKER_REGISTRY}/${DOCKER_REPO}:${imageTag}", 
+                                    "-f simple-java-app/Dockerfile .")
+                                customImage.push()
+                            }
+                        }
+                    }
+                }
+                
+                stage('GitHub Release') {
+                    when {
+                        expression { return false }
+                    }
+                    agent {
+                        docker {
+                            image 'plugins/github-release'
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        sh '''
+                            github-release \
+                                --base-url https://github.com/revanth-traceable \
+                                --api-key ${GITHUB_PAT} \
+                                --files simple-java-app/target/*
+                        '''
+                    }
+                }
+            }
+        }
+        
+        stage('Helm Package and Push') {
+            agent {
+                docker {
+                    image 'alpine/helm:3.11.1'
+                    reuseNode true
+                }
+            }
+            steps {
+                script {
+                    sh '''
+                        cd simple-java-app/helm/devsecops-demo
+                        
+                        BASE_VERSION=$(grep 'version:' Chart.yaml | awk '{print $2}')
+                        TAG="${IMAGE_TAG}"
+                        
+                        if [[ "$TAG" =~ ^[0-9]+\\.[0-9]+\\.[0-9]+$ ]]; then
+                            CHART_VERSION=${TAG}
+                        else
+                            CHART_VERSION="${BASE_VERSION}-${TAG}"
+                        fi
+                        
+                        sed -i "s/version: ${BASE_VERSION}/version: ${CHART_VERSION}/" Chart.yaml
+                        sed -i 's|tag: "latest"|tag: "'${TAG}'"|' values.yaml
+                        
+                        helm registry login pkg.harness.io -u ${HELM_USER} -p ${HELM_TOKEN}
+                        helm package .
+                        helm push demo-java-app-${CHART_VERSION}.tgz oci://${HELM_REGISTRY}
+                        
+                        echo ${CHART_VERSION} > /tmp/chart_version.txt
+                    '''
+                    
+                    env.CHART_VERSION = readFile('/tmp/chart_version.txt').trim()
+                }
+            }
+        }
+        
+        stage('Custom Helm Push Plugin') {
+            agent {
+                docker {
+                    image 'revanthharness/drone-helm-push:latest'
+                    args "-v ${WORKSPACE}:/workspace"
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    drone-helm-push \
+                        --chart-path simple-java-app/helm/devsecops-demo \
+                        --registry-url ${HELM_REGISTRY} \
+                        --username ${HELM_USER} \
+                        --password ${HELM_TOKEN} \
+                        --chart-version 1.2.11 \
+                        --app-version 1.2.11
+                '''
+            }
+        }
+        
+        stage('Security Scans') {
+            parallel {
+                stage('Grype - Container Scan') {
+                    agent {
+                        docker {
+                            image 'anchore/grype:latest'
+                            args '--privileged'
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        sh '''
+                            grype ${DOCKER_REGISTRY}/${DOCKER_REPO}:${IMAGE_TAG} \
+                                -o json \
+                                --file grype-results.json || true
+                        '''
+                        archiveArtifacts artifacts: 'grype-results.json', allowEmptyArchive: true
+                    }
+                }
+                
+                stage('Semgrep - Code Scan') {
+                    agent {
+                        docker {
+                            image 'returntocorp/semgrep:latest'
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        sh '''
+                            semgrep --config=auto \
+                                --json \
+                                --output semgrep-results.json \
+                                . || true
+                        '''
+                        archiveArtifacts artifacts: 'semgrep-results.json', allowEmptyArchive: true
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo "Pipeline completed successfully!"
+        }
+        failure {
+            echo "Pipeline failed!"
+        }
+    }
+}
