@@ -1,0 +1,173 @@
+HARNESS CONNECTORS LIST
+========================
+
+Total Connectors Found: 22
+
+1. aws-delegate-ap-south-1 (awsdelegateapsouth1)
+   Type: Aws
+   Status: SUCCESS
+   Description: 
+   Created: 2025-09-16T17:16:11+05:30
+   Last Modified: 2025-09-16T20:00:51+05:30
+
+2. gke-autopilot-k8s (gkeautopilotk8s)
+   Type: K8sCluster
+   Status: SUCCESS
+   Description: 
+   Created: 2025-09-11T18:59:32+05:30
+   Last Modified: 2025-09-11T18:59:32+05:30
+
+3. gke-autopilot (gkeautopilot)
+   Type: Gcp
+   Status: SUCCESS
+   Description: 
+   Created: 2025-09-11T18:46:18+05:30
+   Last Modified: 2025-09-11T18:46:18+05:30
+
+4. rr-gcp-cloud-connector (rrgcpcloudconnector)
+   Type: Gcp
+   Status: SUCCESS
+   Description: 
+   Created: 2025-07-15T13:47:38+05:30
+   Last Modified: 2025-09-10T21:07:57+05:30
+
+5. rr-iacm-repo (rriacmrepo)
+   Type: Github
+   Status: SUCCESS
+   Description: 
+   Created: 2025-07-08T17:49:30+05:30
+   Last Modified: 2025-08-22T11:04:53+05:30
+
+6. direct-gcp-k8s (directgcpk8s)
+   Type: K8sCluster
+   Status: SUCCESS
+   Description: 
+   Created: 2025-07-15T14:39:15+05:30
+   Last Modified: 2025-08-14T14:08:08+05:30
+
+7. rr-s3-helm (rrs3helm)
+   Type: HttpHelmRepo
+   Status: FAILURE
+   Description: 
+   Created: 2025-08-11T16:53:57+05:30
+   Last Modified: 2025-08-11T17:05:14+05:30
+
+8. cs-private (csprivate)
+   Type: Github
+   Status: SUCCESS
+   Description: 
+   Created: 2025-07-23T17:51:40+05:30
+   Last Modified: 2025-07-23T18:20:56+05:30
+
+9. revanth-cs-private (revanthcsprivate)
+   Type: Github
+   Status: SUCCESS
+   Description: 
+   Created: 2025-07-17T20:12:19+05:30
+   Last Modified: 2025-07-23T17:46:12+05:30
+
+10. revanth-docker (revanthdocker)
+    Type: DockerRegistry
+    Status: SUCCESS
+    Description: 
+    Created: 2025-04-21T22:29:50+05:30
+    Last Modified: 2025-07-21T15:39:36+05:30
+
+11. public (public)
+    Type: DockerRegistry
+    Status: SUCCESS
+    Description: 
+    Created: 2025-05-15T17:35:55+05:30
+    Last Modified: 2025-07-21T15:39:02+05:30
+
+12. har-helm-connector (harhelmconnector)
+    Type: OciHelmRepo
+    Status: SUCCESS
+    Description: 
+    Created: 2025-05-17T14:04:36+05:30
+    Last Modified: 2025-07-21T15:28:10+05:30
+
+13. revanth-traceable (revanths3repo)
+    Type: Github
+    Status: FAILURE
+    Description: 
+    Created: 2025-07-15T19:05:52+05:30
+    Last Modified: 2025-07-17T22:37:35+05:30
+
+14. rr-test-git (rrtestgit)
+    Type: Git
+    Status: SUCCESS
+    Description: 
+    Created: 2025-07-16T12:50:01+05:30
+    Last Modified: 2025-07-16T12:52:44+05:30
+
+15. rr-aws-terraform-vpc (rrawsterraformvpc)
+    Type: Github
+    Status: SUCCESS
+    Description: 
+    Created: 2025-07-09T19:33:55+05:30
+    Last Modified: 2025-07-09T19:33:55+05:30
+
+16. helmexample (helmexample)
+    Type: HttpHelmRepo
+    Status: SUCCESS
+    Description: 
+    Created: 2025-04-20T00:54:01+05:30
+    Last Modified: 2025-05-17T14:22:10+05:30
+
+17. ci-cache-revanth (cicacherevanth)
+    Type: Aws
+    Status: SUCCESS
+    Description: 
+    Created: 2025-05-15T18:42:36+05:30
+    Last Modified: 2025-05-15T22:00:16+05:30
+
+18. kubernetes-revanth-connector (kubernetesrevanthconnector)
+    Type: K8sCluster
+    Status: SUCCESS
+    Description: 
+    Created: 2025-04-20T00:55:47+05:30
+    Last Modified: 2025-05-15T17:10:21+05:30
+
+19. local (local)
+    Type: K8sCluster
+    Status: FAILURE
+    Description: 
+    Created: 2025-05-11T22:23:18+05:30
+    Last Modified: 2025-05-11T22:23:18+05:30
+
+20. revanth-ssca-github-connector (revanthsscagithubconnector)
+    Type: Github
+    Status: SUCCESS
+    Description: 
+    Created: 2025-05-03T16:34:11+05:30
+    Last Modified: 2025-05-03T16:34:11+05:30
+
+21. harness-project-sample (harnessprojectsample)
+    Type: Github
+    Status: SUCCESS
+    Description: 
+    Created: 2025-04-20T01:37:33+05:30
+    Last Modified: 2025-04-20T01:37:33+05:30
+
+22. Harness Built-in Secret Manager (harnessSecretManager)
+    Type: GcpKms
+    Status: SUCCESS
+    Description: 
+    Created: 2025-04-17T11:13:30+05:30
+    Last Modified: 2025-04-17T11:13:30+05:30
+
+CONNECTOR TYPES SUMMARY:
+- Github: 7 connectors
+- K8sCluster: 4 connectors
+- Aws: 2 connectors
+- Gcp: 2 connectors
+- DockerRegistry: 2 connectors
+- HttpHelmRepo: 2 connectors
+- OciHelmRepo: 1 connector
+- Git: 1 connector
+- GcpKms: 1 connector
+
+STATUS SUMMARY:
+- SUCCESS: 19 connectors
+- FAILURE: 3 connectors

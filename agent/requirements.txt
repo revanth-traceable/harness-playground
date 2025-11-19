@@ -1,0 +1,19 @@
+# AutoGen framework
+autogen-core>=0.4.0
+autogen-agentchat>=0.4.0
+autogen-ext[anthropic]>=0.4.0
+
+# Anthropic with Vertex AI support
+anthropic[vertex]>=0.40.0
+
+# Google Cloud dependencies
+google-auth>=2.0.0
+google-cloud-aiplatform>=1.38.0
+
+# MCP for tool integration
+mcp>=1.0.0
+
+# Optional: for better logging
+python-dotenv>=1.0.0
+
+tiktoken>=0.1.0
