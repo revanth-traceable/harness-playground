@@ -1,6 +1,7 @@
 environment:
   name: cs-dev-cluster
   identifier: csdevcluster
+  tags: {}
+  type: Production
   orgIdentifier: default
   projectIdentifier: revanthcstesting
-  type: PreProduction

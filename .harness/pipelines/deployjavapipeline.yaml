@@ -1,6 +1,4 @@
 pipeline:
-  name: deploy-service
-  identifier: deployservice
   projectIdentifier: revanthcstesting
   orgIdentifier: default
   tags: {}
@@ -13,14 +11,30 @@ pipeline:
         spec:
           deploymentType: NativeHelm
           service:
-            serviceRef: <+input>
-            serviceInputs: <+input>
+            serviceRef: demojavaapp
+            serviceInputs:
+              serviceDefinition:
+                type: NativeHelm
+                spec:
+                  manifests:
+                    - manifest:
+                        identifier: devsecopsdemo
+                        type: HelmChart
+                        spec:
+                          chartVersion: <+input>
+                  artifacts:
+                    primary:
+                      primaryArtifactRef: demojavaapp
+                      sources:
+                        - identifier: demojavaapp
+                          type: DockerRegistry
+                          spec:
+                            tag: <+input>
           environment:
-            environmentRef: <+input>
+            environmentRef: rrgcpenv
             deployToAll: false
-            environmentInputs: <+input>
-            serviceOverrideInputs: <+input>
-            infrastructureDefinitions: <+input>
+            infrastructureDefinitions:
+              - identifier: k8senvnativegcp
           execution:
             steps:
               - step:
@@ -31,21 +45,35 @@ pipeline:
                   spec:
                     key: <+env.name>-<+infra.namespace>
                     scope: Pipeline
-              - parallel:
-                  - step:
-                      name: Helm Deployment
-                      identifier: helmDeployment
-                      type: HelmDeploy
-                      timeout: 10m
+              - step:
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
+                  spec:
+                    shell: Bash
+                    executionTarget: {}
+                    source:
+                      type: Inline
                       spec:
-                        skipDryRun: false
-                  - step:
-                      type: K8sDryRun
-                      name: K8sDryRun_1
-                      identifier: K8sDryRun_1
-                      spec:
-                        encryptYamlOutput: false
-                      timeout: 10m
+                        script: |-
+                          echo "config1"
+                          echo '<+configFile.getAsString("jfrogconfig")>'
+
+                          echo "config2"
+                          echo '<+configFile.getAsString("config:.harness/pipelines/iamapply.yaml")>'
+
+
+                          echo "config3"
+                          echo '<+configFile.getAsString("filestoreconfig:/test/config1.txt")>'
+
+                          echo "config4"
+                          echo '<+configFile.getAsString("config:.harness/pipelines/iamprautomation.yaml")>'
+
+                          echo "config5"
+                          echo '<+configFile.getAsString("config:.harness/pipelines/config.txt")>'
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
             rollbackSteps:
               - step:
                   name: Helm Rollback
@@ -138,3 +166,5 @@ pipeline:
       codebase:
         connectorRef: account.revanthplayground
         build: <+input>
+  identifier: deployjavapipeline
+  name: deploy-java-pipeline

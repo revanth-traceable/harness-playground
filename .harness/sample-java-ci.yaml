@@ -18,12 +18,25 @@ pipeline:
         spec:
           cloneCodebase: true
           caching:
-            enabled: true
+            enabled: false
             override: false
+            paths: []
           buildIntelligence:
-            enabled: true
+            enabled: false
           execution:
             steps:
+              - step:
+                  type: RestoreCacheS3
+                  name: RestoreCacheS3_1
+                  identifier: RestoreCacheS3_1
+                  spec:
+                    connectorRef: cicacherevanth
+                    region: ap-south-1
+                    bucket: rr-trace-s3
+                    key: cache-default
+                    archiveFormat: Tar
+                    pathStyle: false
+                contextType: Pipeline
               - step:
                   type: Run
                   name: build
@@ -39,6 +52,20 @@ pipeline:
                       limits:
                         memory: 100Mi
                         cpu: "0.2"
+              - step:
+                  type: SaveCacheS3
+                  name: SaveCacheS3_1
+                  identifier: SaveCacheS3_1
+                  spec:
+                    connectorRef: cicacherevanth
+                    region: ap-south-1
+                    bucket: rr-trace-s3
+                    key: cache-default
+                    sourcePaths:
+                      - /root/.m2
+                    archiveFormat: Tar
+                    override: false
+                contextType: Pipeline
               - parallel:
                   - step:
                       type: BuildAndPushDockerRegistry
@@ -250,6 +277,8 @@ pipeline:
           runtime:
             type: Cloud
             spec: {}
+          sharedPaths:
+            - /root/.m2
     - stage:
         name: cd
         identifier: cd
@@ -294,3 +323,6 @@ pipeline:
               ci:
                 codebase:
                   build: <+input>
+        when:
+          pipelineStatus: Success
+          condition: "false"

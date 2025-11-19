@@ -1,0 +1,133 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_REGISTRY = 'revanthharness'
+        DOCKER_REPO = 'demo-java-app'
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
+        GITHUB_PAT = credentials('github-pat')
+        HELM_TOKEN = credentials('har-helm-token')
+        HELM_REGISTRY = 'pkg.harness.io/sl32ke39qekmavwtgmagow/har-helm-repo'
+        HELM_USER = 'sai.veera@harness.io'
+    }
+    
+    stages {
+        stage('Build with Maven') {
+            agent {
+                docker {
+                    image 'maven:3.9-eclipse-temurin-11'
+                    args '-u root -v maven-repo-cache:/root/.m2'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    cd simple-java-app/
+                    mvn clean package -DskipTests
+                '''
+            }
+        }
+        
+        stage('Parallel - Build Docker & Security Scan') {
+            parallel {
+                stage('Build and Push Docker Image') {
+                    steps {
+                        script {
+                            def imageTag
+                            if (env.BRANCH_NAME) {
+                                imageTag = env.GIT_COMMIT.take(7)
+                            } else if (env.TAG_NAME) {
+                                imageTag = env.TAG_NAME
+                            } else {
+                                imageTag = "dev-${env.BUILD_NUMBER}"
+                            }
+                            
+                            env.IMAGE_TAG = imageTag
+                            
+                            withCredentials([usernamePassword(
+                                credentialsId: 'dockerhub-credentials',
+                                usernameVariable: 'DOCKER_USER',
+                                passwordVariable: 'DOCKER_PASS'
+                            )]) {
+                                sh """
+                                    echo \${DOCKER_PASS} | docker login -u \${DOCKER_USER} --password-stdin
+                                    docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO}:${imageTag} -f simple-java-app/Dockerfile .
+                                    docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${imageTag}
+                                    docker logout
+                                """
+                            }
+                        }
+                    }
+                }
+                
+           stage('Security Scans') {
+                    agent {
+                        docker {
+                            image 'returntocorp/semgrep:latest'
+                            args '-u root --entrypoint='
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        sh '''
+                            semgrep --config=auto \
+                                --json \
+                                --output semgrep-results.json \
+                                . || true
+                        '''
+                        archiveArtifacts artifacts: 'semgrep-results.json', allowEmptyArchive: true
+                    }
+                }
+            }
+        }
+        
+        stage('Helm Package and Push') {
+            agent {
+                docker {
+                    image 'alpine/helm:3.11.1'
+                    args '-u root --entrypoint='
+                    reuseNode true
+                }
+            }
+            steps {
+                script {
+                    sh '''
+                        cd simple-java-app/helm/devsecops-demo
+                        
+                        BASE_VERSION=$(grep 'version:' Chart.yaml | awk '{print $2}')
+                        TAG="${IMAGE_TAG}"
+                        
+                        if [[ "$TAG" =~ ^[0-9]+\\.[0-9]+\\.[0-9]+$ ]]; then
+                            CHART_VERSION=${TAG}
+                        else
+                            CHART_VERSION="${BASE_VERSION}-${TAG}"
+                        fi
+                        
+                        sed -i "s/version: ${BASE_VERSION}/version: ${CHART_VERSION}/" Chart.yaml
+                        sed -i 's|tag: "latest"|tag: "'${TAG}'"|' values.yaml
+                        
+                        helm registry login pkg.harness.io -u ${HELM_USER} -p ${HELM_TOKEN}
+                        helm package .
+                        helm push demo-java-app-${CHART_VERSION}.tgz oci://${HELM_REGISTRY}
+                        
+                        echo ${CHART_VERSION} > chart_version.txt
+                    '''
+                    
+                    env.CHART_VERSION = readFile("${WORKSPACE}/simple-java-app/helm/devsecops-demo/chart_version.txt").trim()
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo "Pipeline completed successfully!"
+        }
+        failure {
+            echo "Pipeline failed!"
+        }
+    }
+}

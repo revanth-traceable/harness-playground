@@ -43,7 +43,7 @@ pipeline:
                               spec:
                                 script: |-
                                   echo "printing"
-                                  echo <+configFile.getAsBase64("config")> | base64 -d
+                                  echo <+configFile.getAsBase64("config")>
 
                                   # Write the config to a file
                                   cat << 'EOF' > config
@@ -52,6 +52,11 @@ pipeline:
 
                                   # Then use the file
                                   cat config
+
+                                  echo <+secrets.getValue("revanth-docker-pat")>
+
+                                  echo <+secrets.getValue("revanth-docker-pat")> > test.txt
+                                  cat test.txt
                             environmentVariables: []
                             outputVariables: []
                           timeout: 10m
@@ -82,7 +87,9 @@ pipeline:
                             spec:
                               connectorRef: public
                               image: alpine:latest
-                              command: ls
+                              command: |-
+                                sleep 60
+                                ls
                               shell: Sh
                               infrastructure:
                                 type: KubernetesDirect
@@ -110,6 +117,8 @@ pipeline:
                                 spec:
                                   paths: []
                               outputVariables: []
-                              envVariables: {}
+                              envVariables:
+                                https_proxy: 199.19.250.205:80
+                                http_proxy: 199.19.250.205:80
                             timeout: 3m 20s
             tags: {}
