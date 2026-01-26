@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_harness_playground_1769434504844-pr-trigger-input-set
+  identifier: Build_harness_playground_1769434504844prtriggerinputset
+  orgIdentifier: Prameetorg
+  projectIdentifier: prameetproj
+  pipeline:
+    identifier: Build_harness_playground_1769434504844
+    properties:
+      ci:
+        codebase:
+          build:
+            type: PR
+            spec:
+              number: <+trigger.prNumber>
