@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_harness_playground_1769434504844-push-trigger-input-set
+  identifier: Build_harness_playground_1769434504844pushtriggerinputset
+  orgIdentifier: Prameetorg
+  projectIdentifier: prameetproj
+  pipeline:
+    identifier: Build_harness_playground_1769434504844
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: <+trigger.branch>
