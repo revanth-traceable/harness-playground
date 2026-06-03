@@ -4,7 +4,7 @@ pipeline:
   projectIdentifier: revanthcstesting
   orgIdentifier: default
   tags:
-    owner: platform-team-mcp-jsonpatch-test-edited
+    owner: platform-team-mcp-jsonpatch-test-cursor
   properties:
     ci:
       codebase:
