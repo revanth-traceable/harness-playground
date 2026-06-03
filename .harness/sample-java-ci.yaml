@@ -4,7 +4,7 @@ pipeline:
   projectIdentifier: revanthcstesting
   orgIdentifier: default
   tags:
-    owner: platform-team-mcp-patch-test
+    owner: platform-team-mcp-fullbody-test
   properties:
     ci:
       codebase:
@@ -207,7 +207,7 @@ pipeline:
                                 type: docker
                                 spec:
                                   connector: revanthdocker
-                                  image: <+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].imageName>:<+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
+                                  image: <+pipeline.stages.ci.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].imageName>
                               attestation:
                                 type: cosign
                                 spec:
