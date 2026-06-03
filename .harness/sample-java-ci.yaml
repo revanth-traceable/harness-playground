@@ -4,7 +4,7 @@ pipeline:
   projectIdentifier: revanthcstesting
   orgIdentifier: default
   tags:
-    owner: platform-team-mcp-jsonpatch-test-cursor
+    owner: mcp-cursor-agent-smoke-2026-06-03
   properties:
     ci:
       codebase:
