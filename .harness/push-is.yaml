@@ -1,5 +1,5 @@
 inputSet:
-  name: push-is-fullbody-test
+  name: push-is-jsonpatch-test
   identifier: pushis
   orgIdentifier: default
   projectIdentifier: revanthcstesting
