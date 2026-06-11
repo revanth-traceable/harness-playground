@@ -1,5 +1,5 @@
 pipeline:
-  name: mvn-java-app-ci
+  name: mvn-java-app-ci-fb
   identifier: mvnjavaappci
   projectIdentifier: revanthcstesting
   orgIdentifier: default
