@@ -669,7 +669,8 @@ platform:
     autoscaling:
       enabled: false
     featureFlags:
-      ADDITIONAL: PL_GCP_OIDC_AUTHENTICATION,PIPE_MULTILINE_VARIABLE_INPUTNEW_FEATURE_FLAGNEW_FEATURE_FLAGNEW_FEATURE_FLAG,PL_AUDIT_LOG_STREAMING_ENABLED
+      ADDITIONAL: PL_GCP_OIDC_AUTHENTICATION,PIPE_MULTILINE_VARIABLE_INPUTNEW_FEATURE_FLAGNEW_FEATURE_FLAGNEW_FEATURE_FLAG,PL_AUDIT_LOG_STREAMING_ENABLED,FF1,FF2
+      NG: ENABLE_DEFAULT_NG_EXPERIENCE_FOR_ONPREM,NEXT_GEN_ENABLED,NEW_LEFT_NAVBAR_SETTINGS,PL_ENABLE_JIT_USER_PROVISION,CDS_NAV_2_0,PL_HIDE_ACCOUNT_EDITION_UI,PIPE_GITX_KEEP_REPO_NAME_FALLBACK # chart default without SPG_SIDENAV_COLLAPSE (live kubectl patch 2026-10-15)
     java:
       memory: "1024"
     podSecurityContext:
@@ -911,12 +912,12 @@ platform:
         type: RuntimeDefault
     replicaCount: 1
     resources:
-      limits:
-        memory: 2048Mi
       requests:
         cpu: 512m
-        memory: 2048Mi
-    secrets:
+        memory: 6Gi
+      limits:
+        memory: 6Gi
+    secrets: # raised live with kubectl 2026-10-09, captured in Git
       default:
         CF_CLIENT_API_KEY: ""
       kubernetesSecrets:
