@@ -911,13 +911,13 @@ platform:
       seccompProfile:
         type: RuntimeDefault
     replicaCount: 1
-    resources:
+    resources: # raised live with kubectl 2026-10-09, captured in Git; also sizes orchestration-engine
       requests:
         cpu: 512m
         memory: 6Gi
       limits:
         memory: 6Gi
-    secrets: # raised live with kubectl 2026-10-09, captured in Git
+    secrets:
       default:
         CF_CLIENT_API_KEY: ""
       kubernetesSecrets:
