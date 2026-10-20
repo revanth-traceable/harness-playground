@@ -4,7 +4,8 @@ metadata:
   name: harness-smp
   namespace: argocd
   annotations:
-    argocd.argoproj.io/compare-options: ServerSideDiff=true
+    # ServerSideDiff=true is added back after the first sync: its dry-run can't see the Helm field migration
+    argocd.argoproj.io/client-side-apply-migration-manager: helm # take over fields the Helm CLI owned
   # No resources-finalizer: deleting this Application must never delete Harness or its databases
 spec:
   project: default

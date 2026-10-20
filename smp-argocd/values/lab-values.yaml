@@ -483,7 +483,8 @@ platform:
                 - ALL
             seccompProfile:
               type: RuntimeDefault
-      postgresql:
+          enabled: false
+      postgresql: # no arbiter in this replica set; the TTL-deleted Job would keep the app OutOfSync
         primary:
           persistence:
             size: 8Gi
