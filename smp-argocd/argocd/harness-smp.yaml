@@ -4,8 +4,9 @@ metadata:
   name: harness-smp
   namespace: argocd
   annotations:
-    # ServerSideDiff=true is added back after the first sync: its dry-run can't see the Helm field migration
     argocd.argoproj.io/client-side-apply-migration-manager: helm # take over fields the Helm CLI owned
+    # Enable only after the first sync: the dry-run can't see the Helm field migration above
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
   # No resources-finalizer: deleting this Application must never delete Harness or its databases
 spec:
   project: default
@@ -44,3 +45,7 @@ spec:
     - group: apps
       kind: Deployment
       jsonPointers: [/spec/replicas] # owned by the HPA when autoscaling is on
+    - group: apps
+      kind: StatefulSet
+      name: postgres
+      jsonPointers: [/spec/updateStrategy/rollingUpdate] # chart sets partition 0, the API server drops it
