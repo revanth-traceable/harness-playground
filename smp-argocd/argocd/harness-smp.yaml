@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: harness-smp
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/compare-options: ServerSideDiff=true
+  # No resources-finalizer: deleting this Application must never delete Harness or its databases
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: harness
+  sources:
+    - repoURL: https://harness.github.io/helm-charts
+      chart: harness
+      targetRevision: 0.46.0
+      helm:
+        releaseName: harness # same name as the existing Helm release, so every object name matches
+        valueFiles:
+          - $values/smp-argocd/values/lab-values.yaml
+    - repoURL: https://github.com/revanth-traceable/harness-playground.git
+      targetRevision: smp-argocd-lab
+      ref: values
+  syncPolicy: # manual sync, no prune, no self-heal
+    syncOptions:
+      - RespectIgnoreDifferences=true
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - FailOnSharedResource=true
+      - PruneLast=true
+    retry:
+      limit: 2
+      backoff: { duration: 30s, factor: 2, maxDuration: 3m }
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      jsonPointers: [/data] # chart-generated passwords and tokens are random on every render
+    - group: ""
+      kind: ConfigMap
+      name: global-smp-config
+      jsonPointers: [/data/PREVIOUS_SMP_VERSION] # filled by Helm lookup, always empty under Argo CD
+    - group: apps
+      kind: Deployment
+      jsonPointers: [/spec/replicas] # owned by the HPA when autoscaling is on
