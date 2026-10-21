@@ -42,6 +42,8 @@ global:
     enabled: true
 ci:
   ci-manager:
+    config:
+      HARNESS_IMAGE_REPOSITORY: "" # else ci-manager's start-up script rewrites every " harness/" image back to "harnesssecure/"
     ci_images: # lab only: public names, because the harnessImage connector points at Harness's public GAR, which has no harnesssecure/ images
       addon:
         image:
