@@ -93,7 +93,7 @@ platform:
         memory: 1536Mi
       requests:
         cpu: 1
-        memory: 1536Mi
+        memory: 1000Mi
   pipeline-service:
     resources: # demo profile's 2Gi is OOMKilled; small profile's memory. Also sizes orchestration-engine
       limits:
