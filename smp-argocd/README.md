@@ -16,7 +16,10 @@ This repository is public. Create these in the cluster before the first sync:
 
 ```bash
 # Harness license, referenced by global.license.secrets.kubernetesSecrets
-kubectl create secret generic harness-license -n harness --from-file=NG_LICENSE=<license-file>
+kubectl create secret generic harness-license-2026-10 -n harness --from-file=NG_LICENSE=<license-file>
+
+# S3 access key for step logs (bucket harness-s3-logs, eu-central-1)
+kubectl create secret generic aws-s3-secret -n harness --from-literal=access-key=<id> --from-literal=secret-key=<secret>
 
 # harness-db-migrator SECRET, pinned so a re-created Secret keeps the current value
 kubectl create secret generic harness-db-migrator-pinned -n harness --from-literal=SECRET=<current value>

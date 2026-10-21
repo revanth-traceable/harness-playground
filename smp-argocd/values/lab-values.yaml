@@ -6,7 +6,7 @@ global:
   cd:
     enabled: true
   chaos:
-    enabled: true
+    enabled: false
   imagePullSecrets:
     - regcred
   ingress:
@@ -38,6 +38,8 @@ global:
     enabled: false
   storageClass: gp2
   storageClassName: gp2
+  ci:
+    enabled: true
 platform:
   bootstrap:
     database:
@@ -56,6 +58,11 @@ platform:
   log-service:
     config:
       LOG_SERVICE_DISABLE_AUTH: "false"
+    s3:
+      endpoint: ""
+      enableMinioSupport: false
+      bucketName: harness-s3-logs
+      region: eu-central-1
   next-gen-ui:
     replicaCount: 2
   access-control:
