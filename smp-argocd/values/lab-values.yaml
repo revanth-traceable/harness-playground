@@ -1,254 +1,84 @@
+# Lab overrides for chart harness 0.46.0: only values that differ from the chart defaults.
+# Secret references live in lab-secrets.yaml.
+x-pod-security: &pod-security
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+x-container-security: &container-security
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
 cd:
   gitops:
     dbInit:
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            ACL_SECRET: jwtNextGenManagerSecret
-            IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            JWT_SECRET: jwtIdentityServiceSecret
-            MANAGER_JWT_AUTH_SECRET: jwtNextGenManagerSecret
-            OPA_SERVICE_AUTH_SECRET: jwtAuthSecret
-            PLATFORM_AUTH_SECRET: jwtNextGenManagerSecret
-            PLATFORMSERVICE_AUTH_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+      securityContext: *container-security
+    podSecurityContext: *pod-security
+    securityContext: *container-security
 chaos:
-  chaos-common:
-    installLinuxCRDs: false
   chaos-k8s-ifs:
-    autoscaling:
-      enabled: false
     resources:
       limits:
         memory: 128Mi
       requests:
         cpu: 64m
         memory: 128Mi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            CHAOS_K8S_IFS_JWT_SECRET: jwtNextGenManagerSecret
-            CHAOS_MANAGER_JWT_SECRET: jwtNextGenManagerSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            JWT_SECRET: jwtAuthSecret
-            LOAD_TEST_MANAGER_JWT_SECRET: jwtNextGenManagerSecret
-            LOG_SERVICE_TOKEN: logServiceToken
-            NG_JWT_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
   chaos-linux-ifc:
-    autoscaling:
-      enabled: false
     resources:
       limits:
         memory: 128Mi
       requests:
         cpu: 64m
         memory: 128Mi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            CHAOS_LINUX_IFS_JWT_SECRET: jwtNextGenManagerSecret
-            CHAOS_MANAGER_JWT_SECRET: jwtNextGenManagerSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            JWT_SECRET: jwtAuthSecret
-            LOG_SERVICE_TOKEN: logServiceToken
-            NG_JWT_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
   chaos-linux-ifs:
-    autoscaling:
-      enabled: false
     resources:
       limits:
         memory: 128Mi
       requests:
         cpu: 64m
         memory: 128Mi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            CHAOS_LINUX_IFS_JWT_SECRET: jwtNextGenManagerSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            JWT_SECRET: jwtAuthSecret
-            LOG_SERVICE_TOKEN: logServiceToken
-            NG_JWT_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
   chaos-machine-ifc:
-    replicaCount: 1
     resources:
       limits:
         memory: 128Mi
       requests:
         cpu: 64m
         memory: 128Mi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            CHAOS_MACHINE_IFC_JWT_SECRET: jwtNextGenManagerSecret
-            CHAOS_MACHINE_IFS_JWT_SECRET: jwtNextGenManagerSecret
-            CHAOS_MANAGER_JWT_SECRET: jwtNextGenManagerSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            JWT_SECRET: jwtAuthSecret
-            LOG_SERVICE_TOKEN: logServiceToken
-            NG_JWT_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
   chaos-machine-ifs:
-    replicaCount: 1
     resources:
       limits:
         memory: 128Mi
       requests:
         cpu: 64m
         memory: 128Mi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            CHAOS_MACHINE_IFC_JWT_SECRET: jwtNextGenManagerSecret
-            CHAOS_MACHINE_IFS_JWT_SECRET: jwtNextGenManagerSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            JWT_SECRET: jwtAuthSecret
-            LOG_SERVICE_TOKEN: logServiceToken
-            NG_JWT_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
   chaos-manager:
-    autoscaling:
-      enabled: false
     resources:
       limits:
         memory: 256Mi
       requests:
         cpu: 128m
         memory: 256Mi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            CHAOS_K8S_IFS_JWT_SECRET: jwtNextGenManagerSecret
-            CHAOS_LINUX_IFS_JWT_SECRET: jwtNextGenManagerSecret
-            CHAOS_MACHINE_IFS_JWT_SECRET: jwtNextGenManagerSecret
-            CHAOS_MANAGER_JWT_SECRET: jwtNextGenManagerSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            JWT_SECRET: jwtAuthSecret
-            LOG_SERVICE_TOKEN: logServiceToken
-            NG_JWT_SECRET: jwtNextGenManagerSecret
-            PIPELINE_JWT_SECRET: jwtNextGenManagerSecret
-            RT_AGENT_JWT_SECRET: jwtNextGenManagerSecret
-            SERVICE_DISCOVERY_TOKEN: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
   chaos-web:
-    autoscaling:
-      enabled: false
     resources:
       limits:
         memory: 128Mi
       requests:
         cpu: 64m
         memory: 128Mi
-  load-test-manager:
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            CHAOS_K8S_IFS_JWT_SECRET: jwtNextGenManagerSecret
-            CHAOS_LINUX_IFS_JWT_SECRET: jwtNextGenManagerSecret
-            CHAOS_MACHINE_IFS_JWT_SECRET: jwtNextGenManagerSecret
-            CHAOS_MANAGER_JWT_SECRET: jwtNextGenManagerSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            JWT_SECRET: jwtAuthSecret
-            LOAD_TEST_MANAGER_SERVICE_SECRET: jwtNextGenManagerSecret
-            LOG_SERVICE_TOKEN: logServiceToken
-            NG_JWT_SECRET: jwtNextGenManagerSecret
-            PIPELINE_JWT_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
-  rt-agent:
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            AI_AGENT_GATEWAY_JWT_SECRET: jwtNextGenManagerSecret
-            CHAOS_MANAGER_SECRET: jwtNextGenManagerSecret
-            LOG_SERVICE_TOKEN: logServiceToken
-            PIPELINE_SERVICE_SECRET: jwtNextGenManagerSecret
-            SERVICE_DISCOVERY_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
-ci:
-  ci-manager:
-    autoscaling:
-      enabled: false
-    java:
-      memory: 512m
-    replicaCount: 1
-    resources:
-      limits:
-        memory: 1280Mi
-      requests:
-        cpu: 256m
-        memory: 1280Mi
-  ti-service:
-    autoscaling:
-      enabled: false
-    jobresources:
-      limits:
-        memory: 256Mi
-      requests:
-        cpu: 32m
-        memory: 256Mi
-    replicaCount: 1
-    resources:
-      limits:
-        memory: 1400Mi
-      requests:
-        cpu: 0.5
-        memory: 1400Mi
 global:
-  airgap: "false"
   autoscaling:
-    enabled: false
-  ccm:
     enabled: false
   cd:
     enabled: true
-  cdc:
-    enabled: true
-  cg:
-    enabled: false
   chaos:
     enabled: true
-  ci:
-    enabled: false
-  code:
-    enabled: false
-  commonAnnotations: {}
-  commonLabels: {}
-  dbops:
-    enabled: false
-  ff:
-    enabled: false
-  gatewayAPI:
-    create: false
-    enabled: false
-  ha: true
-  iacm:
-    enabled: false
   imagePullSecrets:
     - regcred
-  imageRegistry: ""
   ingress:
-    enabled: false
     hosts:
       - harness.traceablepoc.com
     tls:
-      enabled: true
       secretName: harness.traceablepoc.com
   istio:
     enableRegexRoutes: true
@@ -257,37 +87,20 @@ global:
       create: false
       name: public
       namespace: istio-system
-      port: 443
-      protocol: HTTPS
-      selector:
-        istio: ingressgateway
     hosts:
       - harness.traceablepoc.com
       - istio-ingressgateway.istio-system.svc.cluster.local
     istioGatewayServiceUrl: http://istio-ingressgateway.istio-system.svc.cluster.local
-    strict: false
     tls:
       credentialName: harness.traceablepoc.com
-      minProtocolVersion: TLSV1_2
-      mode: SIMPLE
     virtualService:
       gateways:
         - istio-system/public
       hosts:
         - harness.traceablepoc.com
         - istio-ingressgateway.istio-system.svc.cluster.local
-  license:
-    secrets:
-      kubernetesSecrets:
-        - secretName: harness-license
-          keys:
-            NG_LICENSE: NG_LICENSE
   loadbalancerURL: https://harness.traceablepoc.com
-  srm:
-    enabled: false
   ssc:
-    enabled: false
-  sto:
     enabled: false
   storageClass: gp2
   storageClassName: gp2
@@ -301,157 +114,27 @@ global:
       runAsUser: 65534
       seccompProfile:
         type: RuntimeDefault
-iacm:
-  iac-server:
-    autoscaling:
-      enabled: false
-    replicaCount: 1
-    resources:
-      limits:
-        memory: 256Mi
-      requests:
-        cpu: 128m
-        memory: 256Mi
-  iacm-manager:
-    autoscaling:
-      enabled: false
-    java:
-      memory: 512m
-    replicaCount: 1
-    resources:
-      limits:
-        memory: 1280Mi
-      requests:
-        cpu: 256m
-        memory: 1280Mi
-idp:
-  idp-admin:
-    autoscaling:
-      enabled: true
-      minReplicas: 2
-      resources:
-        limits:
-          memory: 128Mi
-        requests:
-          cpu: 128m
-          memory: 128Mi
-  idp-app-ui:
-    autoscaling:
-      enabled: true
-      minReplicas: 2
-      resources:
-        limits:
-          cpu: 1536m
-          memory: 2Gi
-        requests:
-          cpu: 512m
-          memory: 1Gi
-  idp-service:
-    autoscaling:
-      enabled: true
-      minReplicas: 2
-    java:
-      memory: 4096m
-    resources:
-      limits:
-        cpu: 4
-        memory: 5Gi
-      requests:
-        cpu: 2
-        memory: 5Gi
 platform:
   access-control:
-    autoscaling:
-      enabled: false
-    java:
-      memory: 512m
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
+    podSecurityContext: *pod-security
     resources:
       limits:
         memory: 2Gi
       requests:
         cpu: 256m
         memory: 1Gi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            ACCESS_CONTROL_SECRET: jwtNextGenManagerSecret
-            ACCESS_CONTROL_SERVICE_SECRET: jwtNextGenManagerSecret
-            ACCOUNT_SERVICE_SECRET: jwtNextGenManagerSecret
-            APPSEC_SERVICE_SECRET: jwtNextGenManagerSecret
-            CDE_SERVICE_SECRET: jwtNextGenManagerSecret
-            CE_NEXTGEN_SECRET: jwtNextGenManagerSecret
-            CHAOS_SERVICE_SECRET: jwtNextGenManagerSecret
-            CODE_SERVICE_SECRET: jwtNextGenManagerSecret
-            DBOPS_SERVICE_SECRET: jwtNextGenManagerSecret
-            DEFAULT_SERVICE_SECRET: jwtNextGenManagerSecret
-            FEATURE_FLAG_CLIENT_SECRET: jwtNextGenManagerSecret
-            FF_SERVICE_SECRET: jwtNextGenManagerSecret
-            FME_SERVICE_CLIENT_SECRET: jwtNextGenManagerSecret
-            GITOPS_SERVICE_SECRET: jwtIdentityServiceSecret
-            HAR_SERVICE_SECRET: jwtNextGenManagerSecret
-            IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            IDP_SERVICE_SECRET: jwtNextGenManagerSecret
-            JWT_AUTH_SECRET: jwtAuthSecret
-            NEXT_GEN_MANAGER_SECRET: jwtNextGenManagerSecret
-            OPA_SERVER_SECRET: jwtAuthSecret
-            OPA_SERVICE_SECRET: jwtAuthSecret
-            ORGANIZATION_CLIENT_SERVICE_SECRET: jwtNextGenManagerSecret
-            PIPELINE_SERVICE_SECRET: jwtNextGenManagerSecret
-            PROJECT_CLIENT_SERVICE_SECRET: jwtNextGenManagerSecret
-            RESOURCE_GROUP_CLIENT_SERVICE_SECRET: jwtNextGenManagerSecret
-            RESOURCE_GROUP_SECRET: jwtNextGenManagerSecret
-            RESOURCE_HIERARCHY_SERVICE_SECRET: resourceHierarchyServiceSecret
-            SECRET_CONNECTOR_SERVICE_SECRET: secretConnectorServiceSecret
-            SEI_SERVICE_SECRET: jwtNextGenManagerSecret
-            SERVICEACCOUNT_CLIENT_SERVICE_SECRET: jwtNextGenManagerSecret
-            SPICE_DB_SERVICE_AUTH_TOKEN: spiceDbAuthToken
-            TEMPLATE_SERVICE_SECRET: jwtNextGenManagerSecret
-            USER_CLIENT_SERVICE_SECRET: jwtNextGenManagerSecret
-            USER_GROUP_CLIENT_SERVICE_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   audit-event-streaming:
-    containerSecurityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            NEXT_GEN_MANAGER_SECRET: jwtNextGenManagerSecret
-            PLATFORM_SECRET: jwtNextGenManagerSecret
-            SECRET_CONNECTOR_SERVICE_SECRET: secretConnectorServiceSecret
-          secretName: harness-shared-secrets-046-r7
+    containerSecurityContext: *container-security
+    podSecurityContext: *pod-security
   bootstrap:
     database:
-      clickhouse:
-        enabled: false
       minio:
         defaultBuckets: logs
-        fullnameOverride: minio
-        mode: standalone
         persistence:
           size: 10Gi
       mongodb:
-        containerSecurityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
+        containerSecurityContext: *container-security
         extraFlags:
           - --wiredTigerCacheSizeGB=0.5
         persistence:
@@ -459,7 +142,6 @@ platform:
         podSecurityContext:
           seccompProfile:
             type: RuntimeDefault
-        replicaCount: 3
         resources:
           limits:
             memory: 1024Mi
@@ -483,8 +165,8 @@ platform:
                 - ALL
             seccompProfile:
               type: RuntimeDefault
-          enabled: false
-      postgresql: # no arbiter in this replica set; the TTL-deleted Job would keep the app OutOfSync
+          enabled: false # no arbiter in this replica set; the TTL-deleted Job would keep the app OutOfSync
+      postgresql:
         primary:
           persistence:
             size: 8Gi
@@ -499,11 +181,7 @@ platform:
       redis:
         initContainers:
           config_init:
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                  - ALL
+            securityContext: *container-security
         podSecurityContext:
           runAsGroup: 1000
           seccompProfile:
@@ -515,37 +193,13 @@ platform:
             requests:
               cpu: 1
               memory: 256Mi
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-        replicaCount: 3
+          securityContext: *container-security
         sentinel:
-          resources:
-            limits:
-              memory: 200Mi
-            requests:
-              cpu: 100m
-              memory: 200Mi
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
+          securityContext: *container-security
         useAntiAffinity: false
-        volumeClaimTemplate:
-          resources:
-            requests:
-              storage: 10Gi
       timescaledb:
         autoscaling:
           enabled: false
-        persistentVolumes:
-          data:
-            size: 100Gi
-          wal:
-            size: 1Gi
         replicaCount: 1
         resources:
           limits:
@@ -553,8 +207,6 @@ platform:
           requests:
             cpu: 0.3
             memory: 512Mi
-    harness-secrets:
-      enabled: true
     networking:
       defaultbackend:
         resources:
@@ -565,100 +217,32 @@ platform:
             memory: 512Mi
       nginx:
         resources:
-          limits:
-            memory: 512Mi
           requests:
             cpu: 32m
-            memory: 512Mi
   change-data-capture:
-    autoscaling:
-      enabled: false
-    containerSecurityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    containerSecurityContext: *container-security
     java:
       memory: 2048
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
-    resources:
-      limits:
-        memory: 2880Mi
-      requests:
-        cpu: 1
-        memory: 2880Mi
+    podSecurityContext: *pod-security
   delegate-proxy:
     autoscaling:
       enabled: false
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
+    podSecurityContext: *pod-security
     resources:
       limits:
         memory: 50Mi
       requests:
         cpu: 50m
         memory: 50Mi
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
-  envoy-gateway:
-    enabled: false
+    securityContext: *container-security
   gateway:
-    autoscaling:
-      enabled: false
     java:
       memory: 768
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
+    podSecurityContext: *pod-security
     replicaCount: 2
-    resources:
-      limits:
-        memory: 4096Mi
-      requests:
-        cpu: "2"
-        memory: 4096Mi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            JWT_ADMIN_PORTAL_SECRET: jwtExternalServiceSecret
-            JWT_AUTH_SECRET: jwtAuthSecret
-            JWT_DATA_HANDLER_SECRET: jwtDataHandlerSecret
-            JWT_EXTERNAL_SERVICE_SECRET: jwtExternalServiceSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            JWT_MARKETPLACE_SECRET: jwtMarketPlaceSecret
-            JWT_MULTI_AUTH_SECRET: jwtMultiAuthSecret
-            JWT_PASSWORD_SECRET: jwtPasswordSecret
-            JWT_SPLIT_SECRET: jwtSplitSecret
-            JWT_SSO_REDIRECT_SECRET: jwtSsoRedirectSecret
-            JWT_ZENDESK_SECRET: jwtZendeskSecret
-            LOG_SVC_GLOBAL_TOKEN: logServiceToken
-            NEXT_GEN_MANAGER_SECRET: jwtNextGenManagerSecret
-            TI_SVC_GLOBAL_TOKEN: tiSvcGlobalToken
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   harness-db-migrator:
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    secrets:
-      default:
-        SECRET: 6mosJ9MBsF766ZmY
+    podSecurityContext: *pod-security
     securityContext:
       allowPrivilegeEscalation: false
       capabilities:
@@ -666,109 +250,38 @@ platform:
           - ALL
       runAsUser: 65534
   harness-manager:
-    autoscaling:
-      enabled: false
     featureFlags:
       ADDITIONAL: PL_GCP_OIDC_AUTHENTICATION,PIPE_MULTILINE_VARIABLE_INPUTNEW_FEATURE_FLAGNEW_FEATURE_FLAGNEW_FEATURE_FLAG,PL_AUDIT_LOG_STREAMING_ENABLED,FF1,FF2
-      NG: ENABLE_DEFAULT_NG_EXPERIENCE_FOR_ONPREM,NEXT_GEN_ENABLED,NEW_LEFT_NAVBAR_SETTINGS,PL_ENABLE_JIT_USER_PROVISION,CDS_NAV_2_0,PL_HIDE_ACCOUNT_EDITION_UI,PIPE_GITX_KEEP_REPO_NAME_FALLBACK # chart default without SPG_SIDENAV_COLLAPSE (live kubectl patch 2026-10-15)
+      NG: ENABLE_DEFAULT_NG_EXPERIENCE_FOR_ONPREM,NEXT_GEN_ENABLED,NEW_LEFT_NAVBAR_SETTINGS,PL_ENABLE_JIT_USER_PROVISION,CDS_NAV_2_0,PL_HIDE_ACCOUNT_EDITION_UI,PIPE_GITX_KEEP_REPO_NAME_FALLBACK # chart default without SPG_SIDENAV_COLLAPSE
     java:
       memory: "1024"
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
+    podSecurityContext: *pod-security
     resources:
       limits:
         memory: 2048Mi
       requests:
         cpu: 0.5
         memory: 2048Mi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            ACCESS_CONTROL_SECRET: jwtNextGenManagerSecret
-            COMMAND_LIBRARY_PUBLISHING_SECRET: commandLibraryPublishingSecret
-            DELEGATE_SERVICE_MANAGEMENT_SECRET: jwtNextGenManagerSecret
-            DIRECTORY_SERVICE_SECRET: jwtDirectoryServiceSecret
-            GENAI_SERVICE_SECRET: jwtNextGenManagerSecret
-            JWT_TRACEABLE_SECRET: jwtTraceableSecret
-            LOG_STREAMING_SERVICE_TOKEN: logServiceToken
-            MANAGER_TO_COMMAND_LIBRARY_SERVICE_SECRET: managerToCommandLibrarySecret
-            NEXT_GEN_MANAGER_SECRET: jwtNextGenManagerSecret
-            PLATFORM_CONFIG_SERVICE_SECRET: platformConfigServiceSecret
-            QUEUE_SERVICE_AUTH_TOKEN: queueServiceSecret
-            RESOURCE_HIERARCHY_SERVICE_SECRET: resourceHierarchyServiceSecret
-            SECRET_CONNECTOR_SERVICE_SECRET: secretConnectorServiceSecret
-            VERIFICATION_SERVICE_SECRET: tiServiceToken
-            jwtAidaCodeSecret: jwtAidaCodeSecret
-            jwtAuthSecret: jwtAuthSecret
-            jwtCannySecret: jwtCannySecret
-            jwtDataHandlerSecret: jwtDataHandlerSecret
-            jwtExternalServiceSecret: jwtExternalServiceSecret
-            jwtIdentityServiceSecret: jwtIdentityServiceSecret
-            jwtMarketPlaceSecret: jwtMarketPlaceSecret
-            jwtMultiAuthSecret: jwtMultiAuthSecret
-            jwtNextGenManagerSecret: jwtNextGenManagerSecret
-            jwtPasswordSecret: jwtPasswordSecret
-            jwtRelicxSecret: jwtRelicxSecret
-            jwtSplitSecret: jwtSplitSecret
-            jwtSsoRedirectSecret: jwtSsoRedirectSecret
-            jwtZendeskSecret: jwtZendeskSecret
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   log-service:
-    autoscaling:
-      enabled: false
     config:
       LOG_SERVICE_DISABLE_AUTH: "false"
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
+    podSecurityContext: *pod-security
     resources:
       limits:
         memory: 256Mi
       requests:
         cpu: 64m
         memory: 256Mi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            LOG_SERVICE_S3_ACCESS_KEY_ID: root-user
-            LOG_SERVICE_S3_SECRET_ACCESS_KEY: root-password
-          secretName: harness-minio
-        - keys:
-            LOG_SERVICE_GLOBAL_TOKEN: logServiceToken
-            LOG_SERVICE_JWT_AUTH_SECRET: jwtAuthSecret
-            LOG_SERVICE_MANAGER_JWT_AUTH_SECRET: jwtNextGenManagerSecret
-            LOG_SERVICE_PIPELINE_JWT_AUTH_SECRET: jwtAuthSecret
-            LOG_SERVICE_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   looker:
     resources:
       limits:
         memory: 8Gi
       requests:
-        cpu: 2
         memory: 8Gi
   next-gen-ui:
-    autoscaling:
-      enabled: false
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
+    podSecurityContext: *pod-security
     replicaCount: 2
     resources:
       limits:
@@ -776,32 +289,16 @@ platform:
       requests:
         cpu: 500m
         memory: 256Mi
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   ng-auth-ui:
-    autoscaling:
-      enabled: false
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
+    podSecurityContext: *pod-security
     resources:
       limits:
         memory: 64Mi
       requests:
         cpu: 32m
         memory: 64Mi
-    secrets:
-      default: {}
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   ng-custom-dashboards:
     memory: 384
     resources:
@@ -811,307 +308,79 @@ platform:
         cpu: 100m
         memory: 512Mi
   ng-dashboard-aggregator:
-    autoscaling:
-      enabled: false
     java:
       memory: "1024"
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
+    podSecurityContext: *pod-security
     resources:
       limits:
         memory: 2048Mi
       requests:
         cpu: 64m
         memory: 2048Mi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            ACCESS_CONTROL_SECRET: jwtNextGenManagerSecret
-            JWT_AUTH_SECRET: jwtAuthSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            MANAGER_SECRET: jwtNextGenManagerSecret
-            NEXT_GEN_MANAGER_SECRET: jwtNextGenManagerSecret
-            PIPELINE_SERVICE_SECRET: jwtNextGenManagerSecret
-            RESOURCE_HIERARCHY_SERVICE_SECRET: resourceHierarchyServiceSecret
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   ng-manager:
-    autoscaling:
-      enabled: false
     java:
       memory: 1024m
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
+    podSecurityContext: *pod-security
     resources:
       limits:
         memory: 2048Mi
       requests:
         cpu: 256m
         memory: 2048Mi
-    secrets:
-      default:
-        CE_AWS_ACCESS_KEY: ""
-        CE_AWS_SECRET_KEY: ""
-        DEVOPS_STRIPE_API_KEY: ""
-        STRIPE_API_KEY: ""
-      kubernetesSecrets:
-        - keys:
-            ACCESS_CONTROL_SECRET: jwtNextGenManagerSecret
-            AIMLOPS_SERVICE_SECRET: jwtNextGenManagerSecret
-            APPSEC_SERVICE_SECRET: jwtNextGenManagerSecret
-            CHAOS_SERVICE_SECRET: jwtNextGenManagerSecret
-            DBOPS_SERVICE_SECRET: jwtNextGenManagerSecret
-            DIRECTORY_SERVICE_SECRET: jwtDirectoryServiceSecret
-            GITOPS_SERVICE_SECRET: jwtIdentityServiceSecret
-            HARNESS_ARTIFACT_REGISTRY_WEBHOOK_SECRET: artifactRegistryWebhookSecret
-            HARNESS_CODE_SERVICE_SECRET: jwtNextGenManagerSecret
-            HARNESS_CODE_WEBHOOK_SECRET: harnessCodeWebhookSecret
-            HARNESS_ID_SERVICE_SECRET: harnessIdServiceSecret
-            HARNESS_REGISTRY_SERVICE_SECRET: jwtNextGenManagerSecret
-            HARNESS_STATUSPAGE_SERVICE_SECRET: jwtNextGenManagerSecret
-            HSQS_AUTH_TOKEN: queueServiceSecret
-            IACM_SERVICE_SECRET: iacmServiceToken
-            IDP_SERVICE_SECRET: jwtNextGenManagerSecret
-            JWT_AUTH_SECRET: jwtAuthSecret
-            JWT_DATA_HANDLER_SECRET: jwtDataHandlerSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            JWT_RELICX_SECRET: jwtRelicxSecret
-            LOAD_TEST_MANAGER_SERVICE_SECRET: jwtNextGenManagerSecret
-            LOG_STREAMING_SERVICE_TOKEN: logServiceToken
-            NEXT_GEN_MANAGER_SECRET: jwtNextGenManagerSecret
-            OPA_SERVER_SECRET: jwtAuthSecret
-            PLATFORM_CONFIG_SERVICE_SECRET: platformConfigServiceSecret
-            RESOURCE_HIERARCHY_SERVICE_SECRET: resourceHierarchyServiceSecret
-            SERVICE_DISCOVERY_SERVICE_SECRET: jwtNextGenManagerSecret
-            TEMPLATE_SERVICE_SECRET: jwtNextGenManagerSecret
-            USER_VERIFICATION_SECRET: userVerificationSecret
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   pipeline-service:
-    autoscaling:
-      enabled: false
     java:
       memory: 768m
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
-    resources: # raised live with kubectl 2026-10-09, captured in Git; also sizes orchestration-engine
+    podSecurityContext: *pod-security
+    resources: # also sizes orchestration-engine
       requests:
         cpu: 512m
         memory: 6Gi
       limits:
         memory: 6Gi
-    secrets:
-      default:
-        CF_CLIENT_API_KEY: ""
-      kubernetesSecrets:
-        - keys:
-            ACCESS_CONTROL_SECRET: jwtNextGenManagerSecret
-            AISRE_SERVICE_CLIENT_SECRET: jwtIdentityServiceSecret
-            ANNOTATIONS_SERVICE_SECRET: jwtNextGenManagerSecret
-            CI_MANAGER_SERVICE_SECRET: jwtNextGenManagerSecret
-            CV_MANAGER_SERVICE_SECRET: jwtNextGenManagerSecret
-            FF_SERVER_API_KEY: platformAuthToken
-            FLEX_ENFORCEMENT_SERVICE_SECRET: jwtNextGenManagerSecret
-            FME_SERVICE_CLIENT_SECRET: jwtNextGenManagerSecret
-            HARNESS_CODE_SERVICE_SECRET: jwtNextGenManagerSecret
-            HARNESS_ID_SERVICE_SECRET: harnessIdServiceSecret
-            HARNESS_REGISTRY_JWT_SECRET: jwtNextGenManagerSecret
-            HSQS_AUTH_TOKEN: queueServiceSecret
-            IACM_MANAGER_SERVICE_SECRET: jwtNextGenManagerSecret
-            IDP_SERVICE_SECRET: idpServiceSecret
-            JWT_AUTH_SECRET: jwtAuthSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            LOG_STREAMING_SERVICE_TOKEN: logServiceToken
-            MANAGER_SERVICE_SECRET: jwtNextGenManagerSecret
-            NG_MANAGER_SERVICE_SECRET: jwtNextGenManagerSecret
-            NOTIFICATION_CLIENT_SECRET: jwtNextGenManagerSecret
-            OPA_SERVER_SECRET: jwtAuthSecret
-            PIPELINE_SERVICE_SECRET: jwtNextGenManagerSecret
-            PLATFORM_CONFIG_SERVICE_SECRET: platformConfigServiceSecret
-            QWIET_SERVICE_GLOBAL_TOKEN: stoServiceToken
-            RESOURCE_HIERARCHY_SERVICE_SECRET: resourceHierarchyServiceSecret
-            SECRET_CONNECTOR_SERVICE_SECRET: secretConnectorServiceSecret
-            SSCA_SERVICE_SECRET: jwtNextGenManagerSecret
-            STO_MANAGER_SERVICE_SECRET: jwtNextGenManagerSecret
-            STO_SERVICE_GLOBAL_TOKEN: stoServiceToken
-            TEMPLATE_SERVICE_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   platform-service:
-    autoscaling:
-      enabled: false
     java:
       memory: 1024m
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
+    podSecurityContext: *pod-security
     resources:
       limits:
         memory: 1400Mi
       requests:
         cpu: 256m
         memory: 1400Mi
-    secrets:
-      default:
-        CF_CLIENT_API_KEY: ""
-        ET_AGENT_TOKEN: DUMMY
-      kubernetesSecrets:
-        - keys:
-            ACCESS_CONTROL_SECRET: jwtNextGenManagerSecret
-            APPSEC_SERVICE_SECRET: jwtNextGenManagerSecret
-            CDE_SERVICE_SECRET: jwtNextGenManagerSecret
-            CE_NEXTGEN_SECRET: jwtNextGenManagerSecret
-            CHAOS_SERVICE_SECRET: jwtNextGenManagerSecret
-            CODE_SERVICE_SECRET: jwtNextGenManagerSecret
-            DBOPS_SERVICE_SECRET: jwtNextGenManagerSecret
-            FF_SERVICE_SECRET: jwtNextGenManagerSecret
-            FME_SERVICE_CLIENT_SECRET: jwtNextGenManagerSecret
-            GITOPS_SERVICE_SECRET: jwtIdentityServiceSecret
-            HAR_SERVICE_SECRET: jwtNextGenManagerSecret
-            IDP_SERVICE_SECRET: jwtNextGenManagerSecret
-            JWT_AUTH_SECRET: jwtAuthSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            NEXT_GEN_MANAGER_SECRET: jwtNextGenManagerSecret
-            NOTIFICATION_CLIENT_SECRET: jwtNextGenManagerSecret
-            OPA_SERVER_SECRET: jwtAuthSecret
-            PIPELINE_SERVICE_SECRET: jwtNextGenManagerSecret
-            PLATFORM_CONFIG_SERVICE_SECRET: platformConfigServiceSecret
-            RESOURCE_GROUP_SECRET: jwtNextGenManagerSecret
-            RESOURCE_HIERARCHY_SERVICE_SECRET: resourceHierarchyServiceSecret
-            SECRET_CONNECTOR_SERVICE_SECRET: secretConnectorServiceSecret
-            TEMPLATE_SERVICE_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   policy-mgmt:
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            APP_INTERNAL_TOKEN_JWT_SECRET: jwtAuthSecret
-            APP_NEXT_GEN_MANAGER_JWT_SECRET: jwtNextGenManagerSecret
-            APP_TOKEN_JWT_SECRET: jwtIdentityServiceSecret
-            HARNESS_SERVICES_PIPELINE_JWT_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    podSecurityContext: *pod-security
+    securityContext: *container-security
   queue-service:
-    autoscaling:
-      enabled: false
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
+    podSecurityContext: *pod-security
     resources:
       limits:
         memory: 250Mi
       requests:
-        cpu: 100m
         memory: 250Mi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            JWT_SECRET: queueServiceSecret
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   scm-service:
-    autoscaling:
-      enabled: false
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
+    podSecurityContext: *pod-security
     resources:
       limits:
         memory: 256Mi
       requests:
         cpu: 64m
         memory: 256Mi
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   template-service:
-    autoscaling:
-      enabled: false
-    java:
-      memory: 1024m
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    replicaCount: 1
+    podSecurityContext: *pod-security
     resources:
       limits:
         memory: 1500Mi
       requests:
         cpu: 256m
         memory: 1500Mi
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            ACCESS_CONTROL_SECRET: jwtNextGenManagerSecret
-            CVNG_SERVICE_SECRET: jwtNextGenManagerSecret
-            HSQS_AUTH_TOKEN: queueServiceSecret
-            IACM_SERVICE_GLOBAL_TOKEN: iacmServiceToken
-            JWT_AUTH_SECRET: jwtAuthSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            MANAGER_SERVICE_SECRET: jwtNextGenManagerSecret
-            NG_MANAGER_SERVICE_SECRET: jwtNextGenManagerSecret
-            OPA_SERVER_SECRET: jwtAuthSecret
-            PLATFORM_CONFIG_SERVICE_SECRET: platformConfigServiceSecret
-            RESOURCE_HIERARCHY_SERVICE_SECRET: resourceHierarchyServiceSecret
-            SECRET_CONNECTOR_SERVICE_SECRET: secretConnectorServiceSecret
-            VMS_SERVICE_SECRET: jwtNextGenManagerSecret
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    securityContext: *container-security
   ui:
-    autoscaling:
-      enabled: false
-    replicaCount: 1
     resources:
       limits:
         memory: 200Mi
@@ -1120,57 +389,14 @@ platform:
         memory: 200Mi
 srm:
   cv-nextgen:
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            ACCESS_CONTROL_SECRET: jwtNextGenManagerSecret
-            ET_SERVICE_SECRET: etServiceSecret
-            JWT_IDENTITY_SERVICE_SECRET: jwtIdentityServiceSecret
-            MANAGER_JWT_AUTH_SECRET: jwtAuthSecret
-            NEXT_GEN_MANAGER_SECRET: jwtNextGenManagerSecret
-            NOTIFICATION_CLIENT_SECRET: jwtNextGenManagerSecret
-            OPA_SERVER_SECRET: jwtAuthSecret
-            PIPELINE_SERVICE_SECRET: jwtNextGenManagerSecret
-            RESOURCE_HIERARCHY_SERVICE_SECRET: resourceHierarchyServiceSecret
-            SECRET_CONNECTOR_SERVICE_SECRET: secretConnectorServiceSecret
-            SERVICE_DISCOVERY_SERVICE_SECRET: jwtNextGenManagerSecret
-            TEMPLATE_SERVICE_SECRET: jwtNextGenManagerSecret
-            VERIFICATION_SERVICE_SECRET: tiServiceToken
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    podSecurityContext: *pod-security
+    securityContext: *container-security
   le-nextgen:
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    secrets:
-      kubernetesSecrets:
-        - keys:
-            VERIFICATION_SERVICE_SECRET: tiServiceToken
-          secretName: harness-shared-secrets-046-r7
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    podSecurityContext: *pod-security
+    securityContext: *container-security
   srm-ui:
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
+    podSecurityContext: *pod-security
+    securityContext: *container-security
     virtualService:
       objects:
         - pathMatchType: prefix
@@ -1180,43 +406,3 @@ srm:
                 service:
                   name: srm-ui
               path: '{{ .Values.global.istio.virtualService.pathPrefix }}/srmui/'
-sto:
-  sto-core:
-    autoscaling:
-      enabled: false
-    replicaCount: 1
-    resources:
-      limits:
-        memory: 256Mi
-      requests:
-        cpu: 128m
-        memory: 256Mi
-  ticket-service:
-    autoscaling:
-      enabled: false
-    replicaCount: 1
-    resources:
-      limits:
-        memory: 256Mi
-      requests:
-        cpu: 128m
-        memory: 256Mi
-x-container:
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-      - ALL
-x-pod:
-  runAsNonRoot: true
-  seccompProfile:
-    type: RuntimeDefault
-x-service:
-  podSecurityContext:
-    runAsNonRoot: true
-    seccompProfile:
-      type: RuntimeDefault
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL

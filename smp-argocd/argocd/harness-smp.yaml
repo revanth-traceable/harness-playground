@@ -21,6 +21,7 @@ spec:
         releaseName: harness # same name as the existing Helm release, so every object name matches
         valueFiles:
           - $values/smp-argocd/values/lab-values.yaml
+          - $values/smp-argocd/values/lab-secrets.yaml
     - repoURL: https://github.com/revanth-traceable/harness-playground.git
       targetRevision: smp-argocd-lab
       ref: values
