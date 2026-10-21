@@ -58,3 +58,10 @@ platform:
       LOG_SERVICE_DISABLE_AUTH: "false"
   next-gen-ui:
     replicaCount: 2
+  access-control:
+    resources: # demo profile's 768Mi is OOMKilled at start-up; this is the small profile's size
+      limits:
+        memory: 1536Mi
+      requests:
+        cpu: 1
+        memory: 1536Mi
