@@ -40,6 +40,21 @@ global:
   storageClassName: gp2
   ci:
     enabled: true
+ci:
+  ci-manager:
+    ci_images: # lab only: public names, because the harnessImage connector points at Harness's public GAR, which has no harnesssecure/ images
+      addon:
+        image:
+          repository: harness/ci-addon
+      addon_rootless:
+        image:
+          repository: harness/ci-addon
+      lite_engine:
+        image:
+          repository: harness/ci-lite-engine
+      lite_engine_rootless:
+        image:
+          repository: harness/ci-lite-engine
 platform:
   bootstrap:
     database:
