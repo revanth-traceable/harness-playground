@@ -58,6 +58,10 @@ ci:
         image:
           repository: harness/ci-lite-engine
 platform:
+  policy-mgmt:
+    config:
+      MYCONFIG: "true"
+      
   bootstrap:
     database:
       mongodbupgrades:
