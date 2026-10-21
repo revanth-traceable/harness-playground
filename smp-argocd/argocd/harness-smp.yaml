@@ -19,8 +19,10 @@ spec:
       targetRevision: 0.46.0
       helm:
         releaseName: harness # same name as the existing Helm release, so every object name matches
-        valueFiles:
+        valueFiles: # applied in order, last wins
+          - override-demo.yaml # sizing profile shipped inside the chart
           - $values/smp-argocd/values/lab-values.yaml
+          - $values/smp-argocd/values/lab-security.yaml
           - $values/smp-argocd/values/lab-secrets.yaml
     - repoURL: https://github.com/revanth-traceable/harness-playground.git
       targetRevision: smp-argocd-lab

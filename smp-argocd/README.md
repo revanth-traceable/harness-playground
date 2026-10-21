@@ -4,7 +4,9 @@ The `harness` Helm release in namespace `harness` (chart 0.46.0), managed by Arg
 
 | Path                       | What it is                                                                          |
 | -------------------------- | ----------------------------------------------------------------------------------- |
-| `values/lab-values.yaml`   | Only the settings that differ from the chart defaults                               |
+| `override-demo.yaml`       | Sizing profile shipped inside the chart, loaded first. No sizing is set in this repo |
+| `values/lab-values.yaml`   | Lab settings that differ from the chart defaults and the demo profile               |
+| `values/lab-security.yaml` | Pod and container security contexts                                                 |
 | `values/lab-secrets.yaml`  | Secret references only: which Secret and key each service reads. Names, no values   |
 | `argocd/harness-smp.yaml`  | The Argo CD Application (chart from the Harness Helm repo, values from this branch) |
 
