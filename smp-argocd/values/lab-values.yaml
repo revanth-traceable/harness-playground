@@ -49,6 +49,11 @@ platform:
       postgresql:
         volumePermissions:
           enabled: false
+      redis:
+        volumeClaimTemplate:
+          resources:
+            requests:
+              storage: 12Gi # grown from 10Gi: PVCs patched, StatefulSet deleted with --cascade=orphan, then synced
   gateway:
     replicaCount: 2
   harness-manager:
